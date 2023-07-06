@@ -5,7 +5,7 @@ from queue import Queue
 from turtle import Turtle
 
 
-class NetTurtle():
+class NetTurtle:
     def __init__(self, wnd):
         super().__init__()
         self._wnd = wnd
@@ -53,21 +53,21 @@ class NetTurtle():
         self._t.right(angle)
 
     def _forward(self):
-        print(self._unit)
+        # print(self._unit)
         future_moving_unit = self._unit if (self._direction % 90 == 0) else self._unit * pow(2, 0.5)
         future_x = self._t.xcor() + future_moving_unit * cos(radians(self._direction))
         future_y = self._t.ycor() + future_moving_unit * sin(radians(self._direction))
 
-        print(f"direction: {self._direction}")
-        print(f"future_moving_unit: {future_moving_unit}")
-        print(f"future_x: {future_x} half_width: {self._half_width}")
-        print(f"future_y: {future_y} half_height: {self._half_height}")
+        # print(f"direction: {self._direction}")
+        # print(f"future_moving_unit: {future_moving_unit}")
+        # print(f"future_x: {future_x} half_width: {self._half_width}")
+        # print(f"future_y: {future_y} half_height: {self._half_height}")
 
         if self._half_width > future_x > -self._half_width and self._half_height > future_y > -self._half_height:
             self._t.forward(future_moving_unit)
 
-        print(f"current_x: {self._t.xcor()}")
-        print(f"current_y: {self._t.ycor()}")
+        # print(f"current_x: {self._t.xcor()}")
+        # print(f"current_y: {self._t.ycor()}")
 
     def updateWindowSize(self):
         self._half_width = self._wnd.window_width() / 2
