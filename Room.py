@@ -9,35 +9,39 @@ class Room(Unique, Thread):
         Unique.__init__(self)
         Thread.__init__(self)
         self.generate_uuid()
+        self._locked = False
         self._name: str = kwargs.get("name", "Anonymous")
         self._players: list[Player] = []
-        self.bindPlayer(kwargs.get("creatorTurtle", None))
-        self._creatorPlayer: Player = kwargs.get("creatorTurtle", None)
-        self._lock = False
+        self.bindPlayer(kwargs.get("creatorPlayer", Player()))
+        self._creatorPlayer: Player = kwargs.get("creatorPlayer", None)
 
     def bindPlayer(self, player):
-        if self._lock:
+        if self._locked:
             print("Room is locked!")
             return
         self._players.append(player)
         player.set_room(self)
 
     def lock(self):
-        self._lock = True
+        self._locked = True
 
     @property
     def getName(self) -> str:
         return self._name
 
     @property
-    def getPlayerNames(self):
-        return [player.get_name() for player in self._players]
+    def getPlayers(self):
+        return [player.get_dict() for player in self._players]
 
     @property
     def getCreatorPlayerName(self):
         return self._creatorPlayer.get_name()
 
     @property
-    def getSelectionDict(self):
-        data = {"room_name": self.getName, "creator_name": self.getCreatorPlayerName, "players": self.getPlayerNames}
+    def getDict(self):
+        data = {"room_name": self.getName,
+                "room_uuid": self.uuid,
+                "creator_name": self.getCreatorPlayerName,
+                "creator_uuid": self._creatorPlayer.uuid,
+                "players": self.getPlayers}
         return data

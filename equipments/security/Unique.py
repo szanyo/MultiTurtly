@@ -7,7 +7,7 @@ from threading import Thread
 
 
 class Unique:
-    _lock = threading.Lock()
+    _locked = threading.Lock()
     _instance_num = 0
 
     def __init__(self, prev_uuid=None):
@@ -18,7 +18,7 @@ class Unique:
             self.uuid = prev_uuid
 
     def generate_uuid(self):
-        with Unique._lock:
+        with Unique._locked:
             if self.uuid is None:
                 self._time = time.time()
                 current_time = str(self._time)

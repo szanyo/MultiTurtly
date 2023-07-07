@@ -3,8 +3,11 @@ from equipments.security.Unique import Unique
 
 
 class Player(Unique):
+    _instance_num = 0
+
     def __init__(self, *args, **kwargs):
-        super().__init__()
+        super().__init__(kwargs.get("uuid", None))
+        self.generate_uuid()
         Player._instance_num += 1
         self._name = kwargs.get("name", "Anonymous_" + str(Player._instance_num))
         self._room = None
@@ -20,3 +23,6 @@ class Player(Unique):
 
     def get_name(self):
         return self._name
+
+    def get_dict(self):
+        return {"name": self._name, "uuid": self.uuid}

@@ -6,6 +6,8 @@ __status__ = "Production"
 __date__ = "2023.05.07"
 __license__ = "MIT"
 
+from typing import Callable
+
 
 class Observer:
     def __init__(self, name="Anonymous"):
@@ -15,10 +17,10 @@ class Observer:
     def get_name(self):
         return self._name
 
-    def subscribe(self, observable):
+    def subscribe(self, observable: Callable):
         self._callbacks.append(observable)
 
-    def unsubscribe(self, observable):
+    def unsubscribe(self, observable: Callable):
         self._callbacks.remove(observable)
 
     def fire(self, *args, **kwargs):
@@ -27,27 +29,27 @@ class Observer:
 
 
 class GlobalObservers:
-    _observers: dict[any, Observer] = {}
+    _events: dict[any, Observer] = {}
 
     @staticmethod
-    def add(observer_name, observer: Observer):
-        GlobalObservers._observers[observer_name] = observer
+    def add(event, name="Anonymous"):
+        GlobalObservers._events[event] = Observer(name)
 
     @staticmethod
-    def remove(observer_name):
-        GlobalObservers._observers.pop(observer_name)
+    def remove(event):
+        GlobalObservers._events.pop(event)
 
     @staticmethod
-    def get(observer_name):
-        return GlobalObservers._observers[observer_name]
+    def get(event):
+        return GlobalObservers._events[event]
 
 
 class ObserverCollection:
     def __init__(self):
         self._events: dict[any, Observer] = {}
 
-    def add(self, event, observer: Observer):
-        self._events[event] = observer
+    def add(self, event, name="Anonymous"):
+        self._events[event] = Observer(name)
 
     def remove(self, event):
         self._events.pop(event)
@@ -56,7 +58,10 @@ class ObserverCollection:
         return self._events[event]
 
     def fire(self, event, *args, **kwargs):
-        self._events[event].fire(*args, **kwargs)
+        if event in self._events:
+            self._events[event].fire(*args, **kwargs)
+            return True
+        return False
 
     def fire_all(self, *args, **kwargs):
         for event in self._events.values():

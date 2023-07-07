@@ -70,7 +70,7 @@ class MultiClientServer(Thread):
         by using the event_handlers object get(EVENT_TYPE).subscribe() method)
         """
         for eventType in NetworkingEvents:
-            self.event_handlers.add(eventType, Observer(eventType.name))
+            self.event_handlers.add(eventType, eventType.name)
 
         self.event_handlers.get(NetworkingEvents.CREATED).subscribe(
             self._connection_created)

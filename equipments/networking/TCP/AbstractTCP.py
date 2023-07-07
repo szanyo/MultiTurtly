@@ -57,7 +57,7 @@ class AbstractTCP(ABC):
         Initialize the internal control messages of the client
         """
         for controlCommand in ControlCommands:
-            self._control_command_handlers.add(controlCommand, Observer(controlCommand.name))
+            self._control_command_handlers.add(controlCommand, controlCommand.name)
 
         self._control_command_handlers.get(ControlCommands.CHECK_CONNECTION).subscribe(
             self._control_check_connection)
@@ -80,7 +80,7 @@ class AbstractTCP(ABC):
         by using the event_handlers object get(EVENT_TYPE).subscribe() method)
         """
         for eventType in NetworkingEvents:
-            self.event_handlers.add(eventType, Observer(eventType.name))
+            self.event_handlers.add(eventType, eventType.name)
 
         self.event_handlers.get(NetworkingEvents.CONNECTED).subscribe(
             self._connection_connected)
