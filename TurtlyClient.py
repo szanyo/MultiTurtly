@@ -7,6 +7,7 @@ from threading import Thread
 
 from Hermes import HermesInterpreter, Hermes
 from Player import Player
+from Room import Room
 from TurtlyCommands import TurtlyServerCommands, TurtlyClientCommands
 from equipments.networking import Networking
 from equipments.networking.Networking import CLIENT_CONFIG_FILE_LOCATION, JSONNetworkConfig, NetworkingEvents
@@ -76,6 +77,7 @@ class TurtlyClient(Thread):
         self._tcp_client.start()
         self._hermes_interpreter = HermesInterpreter()
         self._player = None
+        self._room = None
         self._roomListUpToDate = False
         self._close = False
 
@@ -93,6 +95,7 @@ class TurtlyClient(Thread):
             Hermes(TurtlyServerCommands.NEW_PLAYER_REGISTRATION, **kwargs))
         asyncio.run(self.until_new_player_registered())  # Wait until player is registered on server side
         print("Player registration complete")
+
 
     def _registerPlayer(self, **kwargs):
         kwargs["client_connection"] = self._tcp_client
@@ -113,14 +116,34 @@ class TurtlyClient(Thread):
 
     def createRoom(self, name):
         print("Creating room")
-        kwargs = {"name": name, "creator_player_uuid": self._player.uuid}
+        kwargs = {"room_name": name, "creator_player_uuid": self._player.uuid}
         self._tcp_client.send(
             Hermes(TurtlyServerCommands.OPEN_NEW_GAME_ROOM, **kwargs))
         asyncio.run(self.until_room_created())  # Wait until room is created on server side
         print("Room creation complete")
 
     def _createRoom(self, **kwargs):
+        if self._player.uuid == kwargs["creator_player_uuid"]:
+            kwargs["creatorPlayer"] = self._player
+        else:
+            player_kwargs = {"uuid": kwargs["creator_player_uuid"], "name": kwargs["creator_player_name"]}
+            kwargs["creatorPlayer"] = Player(**player_kwargs)
+        self._room = Room(**kwargs)
         print("Room created")
+
+    def joinRoom(self, name):
+        pass
+
+    def _joinRoom(self, **kwargs):
+        pass
+
+    def readyToPlay(self):
+        print("Ready to play")
+        self._tcp_client.send(
+            Hermes(TurtlyServerCommands.READY_TO_PLAY, **{"player_uuid": self._player.uuid}))
+
+    def updateInfo(self):
+        pass
 
     def close(self):
         self._close = True

@@ -90,7 +90,7 @@ class TurtlyServer(Thread):
         self._players.pop(kwargs["creator_player_uuid"])
         self._tcp_server.client_connections.remove(kwargs["client_connection"])
         kwargs["client_connection"].send(
-            Hermes(TurtlyServerCommands.OPEN_NEW_GAME_ROOM,
+            Hermes(TurtlyClientCommands.OPEN_NEW_GAME_ROOM,
                    TurtlyCommandsType.RESPONSE,
                    **new_room.getDict))
 
@@ -100,8 +100,8 @@ class TurtlyServer(Thread):
 
     def _list_game_rooms(self, *args, **kwargs):
         print("Listing game rooms", args, kwargs)
-        game_room_list = [room.getDict() for room in self._rooms]
-        kwargs["client_connection"].send(Hermes(TurtlyServerCommands.LIST_GAME_ROOMS, rooms=game_room_list))
+        # TODO: game_room_list = [room.getDict() for room in self._rooms]
+        #kwargs["client_connection"].send(Hermes(TurtlyServerCommands.LIST_GAME_ROOMS, rooms=game_room_list))
 
     def run(self):
         self.loop()

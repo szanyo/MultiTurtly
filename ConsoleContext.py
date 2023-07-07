@@ -43,7 +43,7 @@ class ConsoleContext:
             self._outlook()
             try:
                 choice = int(input("Choice: "))
-                if not self._observing.get(choice).fire():
+                if not self._observing.fire(choice):
                     print("Invalid choice")
             except ValueError:
                 print("Invalid choice")

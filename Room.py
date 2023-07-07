@@ -6,11 +6,11 @@ from equipments.security.Unique import Unique
 
 class Room(Unique, Thread):
     def __init__(self, *args, **kwargs):
-        Unique.__init__(self)
+        Unique.__init__(self, kwargs.get("room_uuid", None))
         Thread.__init__(self)
         self.generate_uuid()
         self._locked = False
-        self._name: str = kwargs.get("name", "Anonymous")
+        self._name: str = kwargs.get("room_name", "Anonymous")
         self._players: list[Player] = []
         self.bindPlayer(kwargs.get("creatorPlayer", Player()))
         self._creatorPlayer: Player = kwargs.get("creatorPlayer", None)
@@ -41,7 +41,6 @@ class Room(Unique, Thread):
     def getDict(self):
         data = {"room_name": self.getName,
                 "room_uuid": self.uuid,
-                "creator_name": self.getCreatorPlayerName,
-                "creator_uuid": self._creatorPlayer.uuid,
-                "players": self.getPlayers}
+                "creator_player_name": self.getCreatorPlayerName,
+                "creator_player_uuid": self._creatorPlayer.uuid}
         return data

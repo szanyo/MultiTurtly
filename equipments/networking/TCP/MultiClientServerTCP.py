@@ -15,7 +15,7 @@ from _socket import SO_REUSEADDR
 from equipments.networking import Networking
 from equipments.networking.Networking import TransferMode, ControlCommands, NetworkingEvents, inform
 from equipments.networking.TCP.ClientTCP import Client
-from equipments.patterns.Observing import ObserverCollection, Observer
+from equipments.patterns.Observing import ObserverCollection
 
 
 def disconnected(*args, **kwargs):
@@ -187,7 +187,9 @@ class MultiClientServer(Thread):
         :param kwargs: any other arguments
         """
         inform(Networking.SHW, "CLIENT_CLOSED", args)
-        self.client_connections.remove(kwargs.get("partner"))
+        partner = kwargs.get("partner")
+        if partner in self.client_connections:
+            self.client_connections.remove(partner)
 
     def is_closed(self):
         return self._close

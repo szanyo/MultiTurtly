@@ -8,7 +8,6 @@ class Player(Unique):
     def __init__(self, *args, **kwargs):
         super().__init__(kwargs.get("uuid", None))
         self.generate_uuid()
-        Player._instance_num += 1
         self._name = kwargs.get("name", "Anonymous_" + str(Player._instance_num))
         self._room = None
         self._netTurtle = None
