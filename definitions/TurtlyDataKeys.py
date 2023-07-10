@@ -11,5 +11,6 @@ class TurtlyDataKeys(Enum):
     GAME_ROOM = "game_room"
     PLAYER_NAME = "player_name"
     PLAYER_UUID = "player_uuid"
+    PLAYER_COLOR = "player_color"
     PLAYER = "player"
     PLAYER_TCP_CLIENT_CONNECTION = "player_tcp_client_connection"

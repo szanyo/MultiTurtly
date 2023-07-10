@@ -6,6 +6,7 @@ from threading import Thread
 
 from Turtly.Hermes import Hermes, HermesInterpreter
 from player.AbstractPlayer import AbstractPlayer
+from player.ServerSidePlayer import ServerSidePlayer
 from room.ServerSideGameRoom import ServerSideGameRoom
 from definitions.TurtlyCommands import TurtlyServerCommands, TurtlyClientCommands, TurtlyCommandsType
 from definitions.TurtlyDataKeys import TurtlyDataKeys
@@ -69,15 +70,22 @@ class TurtlyServer(Thread):
         self._initHermesCommands()
 
     def _initHermesCommands(self):
-        self._hermes_interpreter.register_command(TurtlyServerCommands.NEW_PLAYER_REGISTRATION,
-                                                  self._new_player_registration)
-        self._hermes_interpreter.register_command(TurtlyServerCommands.OPEN_NEW_GAME_ROOM, self._open_new_game_room)
-        self._hermes_interpreter.register_command(TurtlyServerCommands.JOIN_TO_GAME_ROOM, self._join_to_game_room)
-        self._hermes_interpreter.register_command(TurtlyServerCommands.LIST_GAME_ROOMS, self._list_game_rooms)
+        self._hermes_interpreter.register_command(
+            TurtlyServerCommands.NEW_PLAYER_REGISTRATION,
+            self._new_player_registration)
+        self._hermes_interpreter.register_command(
+            TurtlyServerCommands.OPEN_NEW_GAME_ROOM,
+            self._open_new_game_room)
+        self._hermes_interpreter.register_command(
+            TurtlyServerCommands.JOIN_TO_GAME_ROOM,
+            self._join_to_game_room)
+        self._hermes_interpreter.register_command(
+            TurtlyServerCommands.LIST_GAME_ROOMS,
+            self._list_game_rooms)
 
     def _new_player_registration(self, *args, **kwargs):
         print("New player registration", args, kwargs)
-        new_player = AbstractPlayer(*args, **kwargs)
+        new_player = ServerSidePlayer(*args, **kwargs)
         self._players[new_player.UUID] = new_player
         client_connection = kwargs[TurtlyDataKeys.PLAYER_TCP_CLIENT_CONNECTION.value]
         client_connection.send(

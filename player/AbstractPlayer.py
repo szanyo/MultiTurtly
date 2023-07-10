@@ -2,7 +2,6 @@ from abc import ABC
 
 from definitions.TurtlyDataKeys import TurtlyDataKeys
 from equipments.security.Unique import Unique
-from room.AbstractRoom import AbstractRoom
 
 
 class AbstractPlayer(Unique, ABC):
@@ -12,6 +11,7 @@ class AbstractPlayer(Unique, ABC):
         super().__init__(kwargs.get(TurtlyDataKeys.PLAYER_UUID.value, None))
         self.generate_uuid()
         self._name = kwargs.get(TurtlyDataKeys.PLAYER_NAME.value, "Anonymous_" + str(AbstractPlayer._instance_num))
+        self._color = kwargs.get(TurtlyDataKeys.PLAYER_COLOR.value, (125, 125, 125))
         self._room = None
         self._netTurtle = None
         self._isReady = False

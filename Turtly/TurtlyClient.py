@@ -7,6 +7,7 @@ from threading import Thread
 
 from Turtly.Hermes import HermesInterpreter, Hermes
 from player.AbstractPlayer import AbstractPlayer
+from player.ClientSidePlayer import ClientSidePlayer
 from room.ServerSideGameRoom import ServerSideGameRoom
 from definitions.TurtlyCommands import TurtlyServerCommands, TurtlyClientCommands, TurtlyGameRoomCommands
 from definitions.TurtlyDataKeys import TurtlyDataKeys
@@ -97,10 +98,9 @@ class TurtlyClient(Thread):
         asyncio.run(self.until_new_player_registered())  # Wait until player is registered on server side
         print("Player registration complete")
 
-
     def _registerPlayer(self, **kwargs):
-        kwargs["client_connection"] = self._tcp_client
-        self._player = AbstractPlayer(**kwargs)
+        kwargs[TurtlyDataKeys.PLAYER_TCP_CLIENT_CONNECTION.value] = self._tcp_client
+        self._player = ClientSidePlayer(**kwargs)
         print("Player registered")
 
     def updateRoomList(self):
