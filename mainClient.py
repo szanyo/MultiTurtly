@@ -1,9 +1,8 @@
 import asyncio
 import time
 
-from ConsoleContext import ConsoleContext
-from Player import Player
-from TurtlyClient import TurtlyClient
+from Turtly.ConsoleContext import ConsoleContext
+from Turtly.TurtlyClient import TurtlyClient
 
 
 class Console:

@@ -20,11 +20,11 @@ from equipments.security.Cryptography import Cryptography
 
 
 class Client(Thread, AbstractTCP):
-    """Client class for TCP connection"""
+    """client class for TCP connection"""
 
     def __init__(self, **kwargs):
         """
-        Constructor of the Client class
+        Constructor of the client class
 
         :param server_ip: IP address of the server (default: localhost)
         :param server_port: Port of the server (default: 5051)

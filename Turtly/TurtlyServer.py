@@ -4,10 +4,11 @@ import sys
 import time
 from threading import Thread
 
-from Hermes import Hermes, HermesInterpreter
-from Player import Player
-from Room import Room
-from TurtlyCommands import TurtlyServerCommands, TurtlyClientCommands, TurtlyCommandsType
+from Turtly.Hermes import Hermes, HermesInterpreter
+from player.AbstractPlayer import AbstractPlayer
+from room.ServerSideGameRoom import ServerSideGameRoom
+from definitions.TurtlyCommands import TurtlyServerCommands, TurtlyClientCommands, TurtlyCommandsType
+from definitions.TurtlyDataKeys import TurtlyDataKeys
 from equipments.networking.Networking import SERVER_CONFIG_FILE_LOCATION, JSONNetworkConfig
 from equipments.networking.TCP.MultiClientServerTCP import MultiClientServer
 from equipments.security.Cryptography import Cryptography, generate_custom_key
@@ -68,32 +69,40 @@ class TurtlyServer(Thread):
         self._initHermesCommands()
 
     def _initHermesCommands(self):
-        self._hermes_interpreter.register_command(TurtlyServerCommands.NEW_PLAYER_REGISTRATION, self._new_player_registration)
+        self._hermes_interpreter.register_command(TurtlyServerCommands.NEW_PLAYER_REGISTRATION,
+                                                  self._new_player_registration)
         self._hermes_interpreter.register_command(TurtlyServerCommands.OPEN_NEW_GAME_ROOM, self._open_new_game_room)
         self._hermes_interpreter.register_command(TurtlyServerCommands.JOIN_TO_GAME_ROOM, self._join_to_game_room)
         self._hermes_interpreter.register_command(TurtlyServerCommands.LIST_GAME_ROOMS, self._list_game_rooms)
 
     def _new_player_registration(self, *args, **kwargs):
         print("New player registration", args, kwargs)
-        new_player = Player(*args, **kwargs)
-        self._players[new_player.uuid] = new_player
-        client_connection = kwargs["client_connection"]
+        new_player = AbstractPlayer(*args, **kwargs)
+        self._players[new_player.UUID] = new_player
+        client_connection = kwargs[TurtlyDataKeys.PLAYER_TCP_CLIENT_CONNECTION.value]
         client_connection.send(
             Hermes(TurtlyClientCommands.NEW_PLAYER_REGISTRATION,
-                   TurtlyCommandsType.RESPONSE, **new_player.get_dict()))
+                   TurtlyCommandsType.RESPONSE,
+                   **{TurtlyDataKeys.PLAYER_UUID.value: new_player.UUID,
+                      TurtlyDataKeys.PLAYER_NAME.value: new_player.Name}
+                   ))
 
     def _open_new_game_room(self, *args, **kwargs):
         print("Opening new game room", args, kwargs)
-        kwargs["creatorPlayer"] = self._players[kwargs["creator_player_uuid"]]
-        new_room = Room(*args, **kwargs)
-        self._rooms[new_room.uuid] = new_room
-        self._players.pop(kwargs["creator_player_uuid"])
-        self._tcp_server.client_connections.remove(kwargs["client_connection"])
-        kwargs["client_connection"].send(
+        kwargs[TurtlyDataKeys.GAME_ROOM_ADMIN.value] = self._players[kwargs[TurtlyDataKeys.GAME_ROOM_ADMIN_UUID.value]]
+        new_room = ServerSideGameRoom(*args, **kwargs)
+        self._rooms[new_room.UUID] = new_room
+        self._players.pop(kwargs[TurtlyDataKeys.GAME_ROOM_ADMIN.value])
+        self._tcp_server.client_connections.remove(kwargs[TurtlyDataKeys.PLAYER_TCP_CLIENT_CONNECTION.value])
+
+        kwargs[TurtlyDataKeys.PLAYER_TCP_CLIENT_CONNECTION.value].send(
             Hermes(TurtlyClientCommands.OPEN_NEW_GAME_ROOM,
                    TurtlyCommandsType.RESPONSE,
-                   **new_room.getDict))
-
+                   **{TurtlyDataKeys.GAME_ROOM_UUID.value: new_room.UUID,
+                      TurtlyDataKeys.GAME_ROOM_ADMIN_UUID.value: new_room.AdminPlayer.UUID,
+                      TurtlyDataKeys.GAME_ROOM_ADMIN_NAME.value: new_room.AdminPlayer.Name,
+                      TurtlyDataKeys.GAME_ROOM_NAME.value: new_room.Name}
+                   ))
 
     def _join_to_game_room(self, *args, **kwargs):
         print("Joining to game room", args, kwargs)
@@ -101,7 +110,7 @@ class TurtlyServer(Thread):
     def _list_game_rooms(self, *args, **kwargs):
         print("Listing game rooms", args, kwargs)
         # TODO: game_room_list = [room.getDict() for room in self._rooms]
-        #kwargs["client_connection"].send(Hermes(TurtlyServerCommands.LIST_GAME_ROOMS, rooms=game_room_list))
+        # kwargs["client_connection"].send(Hermes(TurtlyServerCommands.LIST_GAME_ROOMS, rooms=game_room_list))
 
     def run(self):
         self.loop()
@@ -115,8 +124,8 @@ class TurtlyServer(Thread):
                 if not client.get_queue().empty():
                     msg = client.get_queue().get()
                     if isinstance(msg, Hermes):
-                        msg.kwargs["client_connection"] = client
-                        # Server received a Hermes message, that controls the game from server side
+                        msg.kwargs[TurtlyDataKeys.PLAYER_TCP_CLIENT_CONNECTION.value] = client
+                        # server received a Hermes message, that controls the game from server side
                         if self._hermes_interpreter.execute_command(msg):
                             wait = False
                         else:
@@ -124,4 +133,4 @@ class TurtlyServer(Thread):
             if wait:
                 time.sleep(0.1)
 
-        print("Server closed - exiting now ... (something went wrong or server closed)")
+        print("server closed - exiting now ... (something went wrong or server closed)")

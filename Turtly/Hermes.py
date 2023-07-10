@@ -1,6 +1,6 @@
 from typing import Callable
 
-from TurtlyCommands import TurtlyCommandsType, TurtlyCommands
+from definitions.TurtlyCommands import TurtlyCommandsType, TurtlyCommands
 from equipments.security.Unique import Unique
 
 

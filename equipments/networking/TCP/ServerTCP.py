@@ -19,11 +19,11 @@ from equipments.security.Cryptography import Cryptography
 
 
 class Server(Thread, AbstractTCP):
-    """Server class for TCP connection"""
+    """server class for TCP connection"""
 
     def __init__(self, **kwargs):
         """
-        Constructor of the Server class
+        Constructor of the server class
 
         :param server_ip: IP address of the server
         :param server_port: Port of the server

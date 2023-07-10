@@ -25,7 +25,7 @@ class AbstractTCP(ABC):
 
     def __init__(self, **kwargs):
         """
-        Constructor of the AbstractPartnerTCP class that is the parent of the Client and Server classes
+        Constructor of the AbstractPartnerTCP class that is the parent of the client and server classes
 
         :param server_ip: IP address of the server (default: localhost)
         :param server_port: Port of the server (default: 5051)

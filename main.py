@@ -1,9 +1,7 @@
-import sys
 from threading import Thread
 from time import sleep
-from turtle import *
 
-from NetTurtle import NetTurtle
+from turtle.NetTurtle import NetTurtle
 
 score = 0
 exit = False

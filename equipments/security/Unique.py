@@ -12,27 +12,31 @@ class Unique:
 
     def __init__(self, prev_uuid=None):
         self._time = time.time()
-        self.uuid = None
+        self._uuid = None
 
         if prev_uuid is not None:
-            self.uuid = prev_uuid
+            self._uuid = prev_uuid
 
     def generate_uuid(self):
         with Unique._locked:
-            if self.uuid is None:
+            if self._uuid is None:
                 self._time = time.time()
                 current_time = str(self._time)
                 Unique._instance_num += 1
-                self.uuid = str(Unique._instance_num) + '_' + str(uuid.uuid4()) + '_' + current_time
+                self._uuid = str(Unique._instance_num) + '_' + str(uuid.uuid4()) + '_' + current_time
 
     def get_instance_num(self):
         return Unique._instance_num
+
+    @property
+    def UUID(self):
+        return self._uuid
 
 
 def task():
     unique = Unique()
     unique.generate_uuid()
-    print(unique.uuid)
+    print(unique._uuid)
 
 
 if __name__ == "__main__":
