@@ -1,43 +1,46 @@
-from abc import ABC
+import asyncio
+from abc import ABC, abstractmethod
 from threading import Thread
 
+from definitions.TurtlyCommands import TurtlyGameRoomCommands
 from player.AbstractPlayer import AbstractPlayer
 from definitions.TurtlyDataKeys import TurtlyDataKeys
 from equipments.security.Unique import Unique
+from turtly.Hermes import HermesInterpreter
 
 
-class AbstractRoom(Unique, Thread, ABC):
+class AbstractGameRoom(Unique, ABC):
     def __init__(self, *args, **kwargs):
         room_uuid = kwargs.get(TurtlyDataKeys.GAME_ROOM_UUID.value, None)
         room_name = kwargs.get(TurtlyDataKeys.GAME_ROOM_NAME.value, "Anonymous")
         game_room_admin = kwargs.get(TurtlyDataKeys.GAME_ROOM_ADMIN.value, AbstractPlayer())
 
         Unique.__init__(self, room_uuid)
-        Thread.__init__(self)
 
         self.generate_uuid()
 
         self._locked = False
+        self._closed = False
 
         self._name: str = room_name
-        self._players: list[AbstractPlayer] = []
+        self._players = {}
         self.bindPlayer(game_room_admin)
         self._adminPlayer: AbstractPlayer = game_room_admin
 
-    def hall(self):
-        pass
+        self._hermes_interpreter = HermesInterpreter()
 
-    def game(self):
-        pass
+        self._initHermesCommands()
 
-    def run(self):
-        pass
+    def _initHermesCommands(self):
+        self._hermes_interpreter.register_command(TurtlyGameRoomCommands.READY_TO_PLAY, self._readyToPlay)
+        self._hermes_interpreter.register_command(TurtlyGameRoomCommands.START_GAME, self._startGame)
+        self._hermes_interpreter.register_command(TurtlyGameRoomCommands.IDENTIFICATION, self._identification)
 
     def bindPlayer(self, player):
         if self._locked:
             print("Room is locked!")
             return
-        self._players.append(player)
+        self._players[player.UUID] = player
         player.set_room(self)
 
     def unbindPlayer(self, player):
@@ -47,7 +50,7 @@ class AbstractRoom(Unique, Thread, ABC):
         if player in self._players:
             if player == self._adminPlayer:
                 self._replaceAdminPlayer()
-            self._players.remove(player)
+            self._players.pop(player.UUID)
         player.set_room(None)
 
     def _replaceAdminPlayer(self):
@@ -62,6 +65,22 @@ class AbstractRoom(Unique, Thread, ABC):
     def unlock(self):
         self._locked = False
 
+    @abstractmethod
+    def _readyToPlay(self, *args, **kwargs):
+        pass
+
+    @abstractmethod
+    def _startGame(self, *args, **kwargs):
+        pass
+
+    @abstractmethod
+    def _identification(self, *args, **kwargs):
+        pass
+
+    @property
+    def Closed(self) -> bool:
+        return self._closed
+
     @property
     def Name(self) -> str:
         return self._name
@@ -71,6 +90,16 @@ class AbstractRoom(Unique, Thread, ABC):
         return self._adminPlayer
 
     @property
+    def Players(self):
+        return self._players
+
+    @property
     def getPlayersInfo(self):
         return [{TurtlyDataKeys.GAME_ROOM_ADMIN_NAME.value: player.Name,
                  TurtlyDataKeys.GAME_ROOM_ADMIN_UUID: player.UUID} for player in self._players]
+
+    @property
+    def HermesInterpreter(self):
+        return self._hermes_interpreter
+
+

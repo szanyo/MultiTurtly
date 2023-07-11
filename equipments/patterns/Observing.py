@@ -50,6 +50,7 @@ class ObserverCollection:
 
     def add(self, event, name="Anonymous"):
         self._events[event] = Observer(name)
+        return self._events[event]
 
     def remove(self, event):
         self._events.pop(event)

@@ -1,4 +1,4 @@
-from Turtly.TurtlyServer import TurtlyServer
+from turtly.TurtlyServer import TurtlyServer
 
 if __name__ == "__main__":
     ts = TurtlyServer()

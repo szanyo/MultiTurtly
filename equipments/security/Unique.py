@@ -36,7 +36,7 @@ class Unique:
 def task():
     unique = Unique()
     unique.generate_uuid()
-    print(unique._uuid)
+    print(unique.UUID)
 
 
 if __name__ == "__main__":

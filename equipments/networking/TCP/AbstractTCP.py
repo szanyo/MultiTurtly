@@ -20,7 +20,8 @@ from equipments.security.Cryptography import Cryptography
 
 
 class AbstractTCP(ABC):
-    def get_queue(self):
+    @property
+    def Queue(self):
         return self._queue
 
     def __init__(self, **kwargs):

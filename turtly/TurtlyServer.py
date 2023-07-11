@@ -4,7 +4,7 @@ import sys
 import time
 from threading import Thread
 
-from Turtly.Hermes import Hermes, HermesInterpreter
+from turtly.Hermes import Hermes, HermesInterpreter
 from player.AbstractPlayer import AbstractPlayer
 from player.ServerSidePlayer import ServerSidePlayer
 from room.ServerSideGameRoom import ServerSideGameRoom
@@ -86,8 +86,9 @@ class TurtlyServer(Thread):
     def _new_player_registration(self, *args, **kwargs):
         print("New player registration", args, kwargs)
         new_player = ServerSidePlayer(*args, **kwargs)
+        new_player.start()
         self._players[new_player.UUID] = new_player
-        client_connection = kwargs[TurtlyDataKeys.PLAYER_TCP_CLIENT_CONNECTION.value]
+        client_connection = kwargs[TurtlyDataKeys.SERVER_SIDE_PLAYER_TCP_CONNECTION.value]
         client_connection.send(
             Hermes(TurtlyClientCommands.NEW_PLAYER_REGISTRATION,
                    TurtlyCommandsType.RESPONSE,
@@ -97,13 +98,15 @@ class TurtlyServer(Thread):
 
     def _open_new_game_room(self, *args, **kwargs):
         print("Opening new game room", args, kwargs)
-        kwargs[TurtlyDataKeys.GAME_ROOM_ADMIN.value] = self._players[kwargs[TurtlyDataKeys.GAME_ROOM_ADMIN_UUID.value]]
+        admin_player = self._players[kwargs[TurtlyDataKeys.GAME_ROOM_ADMIN_UUID.value]]
+        kwargs[TurtlyDataKeys.GAME_ROOM_ADMIN.value] = admin_player
         new_room = ServerSideGameRoom(*args, **kwargs)
         self._rooms[new_room.UUID] = new_room
-        self._players.pop(kwargs[TurtlyDataKeys.GAME_ROOM_ADMIN.value])
-        self._tcp_server.client_connections.remove(kwargs[TurtlyDataKeys.PLAYER_TCP_CLIENT_CONNECTION.value])
+        admin_player.set_room(new_room)
+        self._players.pop(kwargs[TurtlyDataKeys.GAME_ROOM_ADMIN_UUID.value])
+        self._tcp_server.client_connections.remove(kwargs[TurtlyDataKeys.SERVER_SIDE_PLAYER_TCP_CONNECTION.value])
 
-        kwargs[TurtlyDataKeys.PLAYER_TCP_CLIENT_CONNECTION.value].send(
+        kwargs[TurtlyDataKeys.SERVER_SIDE_PLAYER_TCP_CONNECTION.value].send(
             Hermes(TurtlyClientCommands.OPEN_NEW_GAME_ROOM,
                    TurtlyCommandsType.RESPONSE,
                    **{TurtlyDataKeys.GAME_ROOM_UUID.value: new_room.UUID,
@@ -117,8 +120,17 @@ class TurtlyServer(Thread):
 
     def _list_game_rooms(self, *args, **kwargs):
         print("Listing game rooms", args, kwargs)
-        # TODO: game_room_list = [room.getDict() for room in self._rooms]
-        # kwargs["client_connection"].send(Hermes(TurtlyServerCommands.LIST_GAME_ROOMS, rooms=game_room_list))
+        game_room_list = [{TurtlyDataKeys.GAME_ROOM_UUID.value: room.UUID,
+                           TurtlyDataKeys.GAME_ROOM_NAME.value: room.Name,
+                           TurtlyDataKeys.GAME_ROOM_ADMIN_NAME.value: room.AdminPlayer.Name,
+                           TurtlyDataKeys.GAME_ROOM_PLAYERS_NAMES.value: [player.Name for player in room.Players.values()]}
+                          for room in self._rooms.values()]
+        client_connection = kwargs[TurtlyDataKeys.SERVER_SIDE_PLAYER_TCP_CONNECTION.value]
+        client_connection.send(
+            Hermes(TurtlyClientCommands.LIST_GAME_ROOMS,
+                   TurtlyCommandsType.RESPONSE,
+                   **{TurtlyDataKeys.GAME_ROOMS.value: game_room_list}
+                   ))
 
     def run(self):
         self.loop()
@@ -129,10 +141,10 @@ class TurtlyServer(Thread):
             if self._tcp_server.is_closed():
                 break
             for client in self._tcp_server.client_connections:
-                if not client.get_queue().empty():
-                    msg = client.get_queue().get()
+                if not client.Queue.empty():
+                    msg = client.Queue.get()
                     if isinstance(msg, Hermes):
-                        msg.kwargs[TurtlyDataKeys.PLAYER_TCP_CLIENT_CONNECTION.value] = client
+                        msg.kwargs[TurtlyDataKeys.SERVER_SIDE_PLAYER_TCP_CONNECTION.value] = client
                         # server received a Hermes message, that controls the game from server side
                         if self._hermes_interpreter.execute_command(msg):
                             wait = False

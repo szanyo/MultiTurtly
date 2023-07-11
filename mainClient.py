@@ -1,8 +1,10 @@
 import asyncio
 import time
+from threading import Thread
 
-from Turtly.ConsoleContext import ConsoleContext
-from Turtly.TurtlyClient import TurtlyClient
+from graphics.Graphics import Graphics
+from turtly.ConsoleContext import ConsoleContext
+from turtly.TurtlyClient import TurtlyClient
 
 
 class Console:
@@ -41,7 +43,15 @@ class Console:
         self._ready_to_start_game()
 
     def _join_to_game_room(self):
-        pass
+        print("---Join to game room---")
+        print("Game room list:")
+        self._tc.updateRoomList()
+        asyncio.run(self._tc.until_room_list_updated())
+        print("Type room name to join: ")
+        name = input()
+        self._tc.joinRoom(name)
+        self._tc.updateInfo()
+        self._ready_to_start_game()
 
     def _ready_to_start_game(self):
         print("---Ready to start game---")
@@ -66,7 +76,9 @@ class Console:
 
 
 if __name__ == "__main__":
-    print("Welcome to Turtly!")
+    print("Welcome to turtly!")
     print("Connecting to server...")
     console = Console()
-    console.main_loop()
+    with Graphics() as graphics:
+        Thread(target=console.main_loop).start()
+        graphics.Window.mainloop()

@@ -11,17 +11,27 @@ class AbstractPlayer(Unique, ABC):
         super().__init__(kwargs.get(TurtlyDataKeys.PLAYER_UUID.value, None))
         self.generate_uuid()
         self._name = kwargs.get(TurtlyDataKeys.PLAYER_NAME.value, "Anonymous_" + str(AbstractPlayer._instance_num))
-        self._color = kwargs.get(TurtlyDataKeys.PLAYER_COLOR.value, (125, 125, 125))
         self._room = None
-        self._netTurtle = None
         self._isReady = False
 
     def set_room(self, room):
         self._room = room
 
-    def get_room(self):
+    def set_ready(self):
+        self._isReady = True
+
+    @property
+    def Room(self):
         return self._room
 
     @property
     def Name(self):
         return self._name
+
+    @property
+    def Ready(self):
+        return self._isReady
+
+    @property
+    def Connection(self):
+        return None

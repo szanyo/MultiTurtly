@@ -1,12 +1,13 @@
 from threading import Thread
 from time import sleep
+from turtle import Screen, mainloop
 
-from turtle.NetTurtle import NetTurtle
+from netturtle.ClientSideNetTurtle import ClientSideNetTurtle
 
 score = 0
 exit = False
 wnd = Screen()
-t = NetTurtle(wnd)
+t = ClientSideNetTurtle(wnd)
 
 
 def game_loop():
@@ -71,7 +72,7 @@ if __name__ == "__main__":
     game_thread = Thread(target=game_loop)
     game_thread.start()
 
-    # Start the turtle's event loop
+    # Start the netturtle's event loop
     mainloop()
 
     game_thread.join()

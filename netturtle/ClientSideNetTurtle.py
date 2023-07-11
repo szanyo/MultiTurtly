@@ -4,14 +4,17 @@ from math import radians, cos, sin
 from queue import Queue
 from turtle import Turtle
 
+from definitions.TurtlyDataKeys import TurtlyDataKeys
+from graphics.Graphics import Graphics, GraphicsCommands
+from netturtle.AbstractNetTurtle import AbstractNetTurtle
 
-class NetTurtle:
-    def __init__(self, wnd):
-        super().__init__()
-        self._wnd = wnd
-        self._t = Turtle()
+
+class ClientSideNetTurtle(AbstractNetTurtle):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._wnd = Graphics().Window
         self._t.speed(0)
-        self._t.color("green")
+        self._t.color(kwargs.get(TurtlyDataKeys.PLAYER_COLOR.value, (125, 125, 125)))
         self._t.shape("turtle")
         self._t.shapesize(stretch_wid=1.5)
         self._t.goto(0, 0)
@@ -19,11 +22,6 @@ class NetTurtle:
         self.movement_queue = Queue()
         self._empty_movement_thread = threading.Thread(target=self._empty_movement_queue)
         self._empty_movement_thread.start()
-        self._direction = 0
-
-        self._half_width = 0
-        self._half_height = 0
-        self._unit = 0
 
     def _empty_movement_queue(self):
         while True:
