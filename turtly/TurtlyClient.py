@@ -5,17 +5,16 @@ import sys
 import time
 from threading import Thread
 
-from room.ClientSideGameRoom import ClientSideGameRoom
-from turtly.Hermes import HermesInterpreter, Hermes
-from player.AbstractPlayer import AbstractPlayer
-from player.ClientSidePlayer import ClientSidePlayer
-from room.ServerSideGameRoom import ServerSideGameRoom
 from definitions.TurtlyCommands import TurtlyServerCommands, TurtlyClientCommands, TurtlyGameRoomCommands
 from definitions.TurtlyDataKeys import TurtlyDataKeys
 from equipments.networking import Networking
 from equipments.networking.Networking import CLIENT_CONFIG_FILE_LOCATION, JSONNetworkConfig, NetworkingEvents
 from equipments.networking.TCP.ClientTCP import Client
 from equipments.security.Cryptography import Cryptography, generate_custom_key
+from player.ClientSidePlayer import ClientSidePlayer
+from room.ClientSideGameRoom import ClientSideGameRoom
+from turtly.Hermes import HermesInterpreter, Hermes
+from turtly.IndentedOutput import IndentedOutput
 
 
 def connected(*args, **kwargs):
@@ -82,6 +81,7 @@ class TurtlyClient(Thread):
         self._player = None
         self._room = None
         self._roomListUpToDate = False
+        self._roomList = []
         self._close = False
         self._focused = True
 
@@ -107,6 +107,7 @@ class TurtlyClient(Thread):
     def updateRoomList(self):
         print("Updating room list")
         self._roomListUpToDate = False
+        self._roomList = []
         self._tcp_client.send(
             Hermes(TurtlyServerCommands.LIST_GAME_ROOMS))
         asyncio.run(self.until_room_list_updated())  # Wait until room list is updated on server side
@@ -115,24 +116,39 @@ class TurtlyClient(Thread):
     def _updateRoomList(self, **kwargs):
         print("Room list updated")
         self._roomListUpToDate = True
+        self._roomList = kwargs[TurtlyDataKeys.GAME_ROOMS.value]
         i = 0
         for room in kwargs[TurtlyDataKeys.GAME_ROOMS.value]:
             i += 1
-            print("-" * 120)
-            print("Room " + str(i))
-            print(room[TurtlyDataKeys.GAME_ROOM_NAME.value])
-            print(room[TurtlyDataKeys.GAME_ROOM_UUID.value])
-            print(room[TurtlyDataKeys.GAME_ROOM_ADMIN_NAME.value])
-            for player in room[TurtlyDataKeys.GAME_ROOM_PLAYERS_NAMES.value]:
-                print(player)
+            prefix = "-" * 3
+            postfix = "-" * 100
+            print(f"{prefix}Room {i}{postfix}")
+            with IndentedOutput():
+                IndentedOutput.print(f"Room name:\t\t{room[TurtlyDataKeys.GAME_ROOM_NAME.value]}")
+                IndentedOutput.print(f"Room unique id:\t{room[TurtlyDataKeys.GAME_ROOM_UUID.value]}")
+                IndentedOutput.print(f"Room admin:\t\t{room[TurtlyDataKeys.GAME_ROOM_ADMIN_NAME.value]}")
+                IndentedOutput.print("Players of room:")
+                with IndentedOutput():
+                    for player in room[TurtlyDataKeys.GAME_ROOM_PLAYERS_NAMES.value]:
+                        IndentedOutput.print(f"{player}")
 
     def createRoom(self, name):
         print("Creating room")
-        kwargs = {TurtlyDataKeys.GAME_ROOM_NAME.value: name,
+        room_uuid = None
+        for room in self._roomList:
+            if room[TurtlyDataKeys.GAME_ROOM_NAME.value] == name:
+                room_uuid = room[TurtlyDataKeys.GAME_ROOM_UUID.value]
+                break
+        if room_uuid is None:
+            print("Room not found")
+            print("Something went wrong")
+            return
+
+        kwargs = {TurtlyDataKeys.GAME_ROOM_UUID.value: room_uuid,
                   TurtlyDataKeys.GAME_ROOM_ADMIN_UUID.value: self._player.UUID}
         self._tcp_client.send(
             Hermes(TurtlyServerCommands.OPEN_NEW_GAME_ROOM, **kwargs))
-        asyncio.run(self.until_room_created())  # Wait until room is created on server side
+        asyncio.run(self.until_player_joined_to_room())  # Wait until room is created on server side
         print("Room creation complete")
 
     def _createRoom(self, **kwargs):
@@ -148,11 +164,19 @@ class TurtlyClient(Thread):
 
     def joinRoom(self, name):
         print("Joining room")
-
-        pass
+        kwargs = {TurtlyDataKeys.GAME_ROOM_NAME.value: name,
+                  TurtlyDataKeys.PLAYER_UUID.value: self._player.UUID}
+        self._tcp_client.send(
+            Hermes(TurtlyServerCommands.JOIN_TO_GAME_ROOM, **kwargs))
+        asyncio.run(self.until_player_joined_to_room())  # Wait until room is joined on server side
+        print("Room joining complete")
 
     def _joinRoom(self, **kwargs):
-        pass
+        kwargs[TurtlyDataKeys.CLIENT_SIDE_GAME_ROOM_TCP_CONNECTION.value] = self._tcp_client
+        self._room = ClientSideGameRoom(**kwargs)
+        self._room.start()
+        self._focused = False
+        print("Room joined")
 
     def readyToPlay(self):
         print("Ready to play")
@@ -206,7 +230,7 @@ class TurtlyClient(Thread):
         while not self._roomListUpToDate:
             await asyncio.sleep(0.5)
 
-    async def until_room_created(self):
+    async def until_player_joined_to_room(self):
         if self._player is not None:
             while self._player.Room is None:
                 await asyncio.sleep(0.5)

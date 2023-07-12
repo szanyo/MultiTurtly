@@ -117,6 +117,9 @@ class TurtlyServer(Thread):
 
     def _join_to_game_room(self, *args, **kwargs):
         print("Joining to game room", args, kwargs)
+        game_room = self._rooms[kwargs[TurtlyDataKeys.GAME_ROOM_UUID.value]]
+        player = self._players[kwargs[TurtlyDataKeys.PLAYER_UUID.value]]
+        game_room.bind_player(player)
 
     def _list_game_rooms(self, *args, **kwargs):
         print("Listing game rooms", args, kwargs)

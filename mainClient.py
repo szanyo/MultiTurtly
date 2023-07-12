@@ -3,6 +3,7 @@ import time
 from threading import Thread
 
 from graphics.Graphics import Graphics
+from room.AbstractGameRoom import roomNameValidator
 from turtly.ConsoleContext import ConsoleContext
 from turtly.TurtlyClient import TurtlyClient
 
@@ -36,20 +37,41 @@ class Console:
 
     def _create_new_game_room(self):
         print("---Create new game room---")
-        print("Game room name: ")
-        name = input()
-        self._tc.createRoom(name)
+        created_room_name = ""
+        while created_room_name == "":
+            self._print_create_controller()
+            created_room_name = input()
+
+            if created_room_name == "0":
+                return
+            elif created_room_name == "-1":
+                exit()
+            if not roomNameValidator(created_room_name):
+                created_room_name = ""
+                print("Invalid room name!")
+
+        self._tc.createRoom(created_room_name)
         self._tc.updateInfo()
         self._ready_to_start_game()
 
     def _join_to_game_room(self):
         print("---Join to game room---")
-        print("Game room list:")
-        self._tc.updateRoomList()
-        asyncio.run(self._tc.until_room_list_updated())
-        print("Type room name to join: ")
-        name = input()
-        self._tc.joinRoom(name)
+        selected_room_name = ""
+        while selected_room_name == "":
+            print("Game room list:")
+            self._tc.updateRoomList()
+            asyncio.run(self._tc.until_room_list_updated())
+            self._print_join_contoller()
+            selected_room_name = input()
+
+            if selected_room_name == "0":
+                return
+            elif selected_room_name == "-1":
+                exit()
+            if not roomNameValidator(selected_room_name):
+                selected_room_name = ""
+
+        self._tc.joinRoom(selected_room_name)
         self._tc.updateInfo()
         self._ready_to_start_game()
 
@@ -73,6 +95,22 @@ class Console:
         print()
         print("0: Back")
         print("-1: Exit")
+
+    def _print_create_controller(self):
+        print("0: Back")
+        print("-1: Exit")
+        print()
+        print("OR press (empty) enter to retry")
+        print()
+        print("OR type room name to create:")
+
+    def _print_join_contoller(self):
+        print("0: Back")
+        print("-1: Exit")
+        print()
+        print("OR press (empty) enter to refresh")
+        print()
+        print("OR type room name to join:")
 
 
 if __name__ == "__main__":

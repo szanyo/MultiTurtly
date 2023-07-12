@@ -9,6 +9,15 @@ from equipments.security.Unique import Unique
 from turtly.Hermes import HermesInterpreter
 
 
+def roomNameValidator(room_name: str):
+    """
+    Validates the room name
+    :param room_name: The new room name to validate
+    :return: True if the room name is valid, False otherwise
+    """
+    return room_name != "" and room_name is not None and len(room_name) > 3
+
+
 class AbstractGameRoom(Unique, ABC):
     def __init__(self, *args, **kwargs):
         room_uuid = kwargs.get(TurtlyDataKeys.GAME_ROOM_UUID.value, None)
@@ -101,5 +110,3 @@ class AbstractGameRoom(Unique, ABC):
     @property
     def HermesInterpreter(self):
         return self._hermes_interpreter
-
-
