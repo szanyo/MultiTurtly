@@ -55,25 +55,31 @@ class Console:
         self._ready_to_start_game()
 
     def _join_to_game_room(self):
-        print("---Join to game room---")
-        selected_room_name = ""
-        while selected_room_name == "":
-            print("Game room list:")
-            self._tc.updateRoomList()
-            asyncio.run(self._tc.until_room_list_updated())
-            self._print_join_contoller()
-            selected_room_name = input()
+        joined = False
+        while not joined:
+            print("---Join to game room---")
+            selected_room_name = ""
+            while selected_room_name == "":
+                print("Game room list:")
+                self._tc.updateRoomList()
+                asyncio.run(self._tc.until_room_list_updated())
+                self._print_join_contoller()
+                selected_room_name = input()
 
-            if selected_room_name == "0":
-                return
-            elif selected_room_name == "-1":
-                exit()
-            if not roomNameValidator(selected_room_name):
-                selected_room_name = ""
+                if selected_room_name == "0":
+                    return
+                elif selected_room_name == "-1":
+                    exit()
+                if not roomNameValidator(selected_room_name):
+                    selected_room_name = ""
 
-        self._tc.joinRoom(selected_room_name)
-        self._tc.updateInfo()
-        self._ready_to_start_game()
+            if self._tc.joinRoom(selected_room_name):
+                self._tc.updateInfo()
+                self._ready_to_start_game()
+                joined = True
+            else:
+                print("Room not found!")
+                joined = False
 
     def _ready_to_start_game(self):
         print("---Ready to start game---")
@@ -99,18 +105,16 @@ class Console:
     def _print_create_controller(self):
         print("0: Back")
         print("-1: Exit")
+        print("enter (empty): Retry")
         print()
-        print("OR press (empty) enter to retry")
-        print()
-        print("OR type room name to create:")
+        print("Type room name to create:")
 
     def _print_join_contoller(self):
         print("0: Back")
         print("-1: Exit")
+        print("enter (empty): Refresh room list")
         print()
-        print("OR press (empty) enter to refresh")
-        print()
-        print("OR type room name to join:")
+        print("Type room name to join:")
 
 
 if __name__ == "__main__":

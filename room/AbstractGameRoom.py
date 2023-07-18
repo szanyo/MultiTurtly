@@ -33,7 +33,6 @@ class AbstractGameRoom(Unique, ABC):
 
         self._name: str = room_name
         self._players = {}
-        self.bindPlayer(game_room_admin)
         self._adminPlayer: AbstractPlayer = game_room_admin
 
         self._hermes_interpreter = HermesInterpreter()

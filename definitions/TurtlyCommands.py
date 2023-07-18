@@ -30,3 +30,4 @@ class TurtlyClientCommands(TurtlyCommands, Enum):
     NEW_PLAYER_REGISTRATION = auto()
     LIST_GAME_ROOMS = auto()
     OPEN_NEW_GAME_ROOM = auto()
+    JOIN_TO_GAME_ROOM = auto()

@@ -102,7 +102,7 @@ class TurtlyServer(Thread):
         kwargs[TurtlyDataKeys.GAME_ROOM_ADMIN.value] = admin_player
         new_room = ServerSideGameRoom(*args, **kwargs)
         self._rooms[new_room.UUID] = new_room
-        admin_player.set_room(new_room)
+        new_room.bindPlayer(admin_player)
         self._players.pop(kwargs[TurtlyDataKeys.GAME_ROOM_ADMIN_UUID.value])
         self._tcp_server.client_connections.remove(kwargs[TurtlyDataKeys.SERVER_SIDE_PLAYER_TCP_CONNECTION.value])
 
@@ -119,7 +119,18 @@ class TurtlyServer(Thread):
         print("Joining to game room", args, kwargs)
         game_room = self._rooms[kwargs[TurtlyDataKeys.GAME_ROOM_UUID.value]]
         player = self._players[kwargs[TurtlyDataKeys.PLAYER_UUID.value]]
-        game_room.bind_player(player)
+        game_room.bindPlayer(player)
+        self._players.pop(kwargs[TurtlyDataKeys.PLAYER_UUID.value])
+        self._tcp_server.client_connections.remove(kwargs[TurtlyDataKeys.SERVER_SIDE_PLAYER_TCP_CONNECTION.value])
+
+        kwargs[TurtlyDataKeys.SERVER_SIDE_PLAYER_TCP_CONNECTION.value].send(
+            Hermes(TurtlyClientCommands.JOIN_TO_GAME_ROOM,
+                   TurtlyCommandsType.RESPONSE,
+                   **{TurtlyDataKeys.GAME_ROOM_UUID.value: game_room.UUID,
+                      TurtlyDataKeys.GAME_ROOM_ADMIN_UUID.value: game_room.AdminPlayer.UUID,
+                      TurtlyDataKeys.GAME_ROOM_ADMIN_NAME.value: game_room.AdminPlayer.Name,
+                      TurtlyDataKeys.GAME_ROOM_NAME.value: game_room.Name}
+                   ))
 
     def _list_game_rooms(self, *args, **kwargs):
         print("Listing game rooms", args, kwargs)

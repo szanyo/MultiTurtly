@@ -33,6 +33,7 @@ class ClientSideGameRoom(AbstractGameRoom, Thread):
     def _readyToPlay(self, *args, **kwargs):
         self._players[kwargs.get(TurtlyDataKeys.PLAYER_UUID.value, None)].set_ready()
         print("Set ready to play")
+        #TODO: Send to server that player is ready to play
 
     def _startGame(self, *args, **kwargs):
         self.lock()
