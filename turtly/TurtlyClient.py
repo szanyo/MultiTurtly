@@ -147,9 +147,12 @@ class TurtlyClient(Thread):
         if self._player.UUID == kwargs[TurtlyDataKeys.GAME_ROOM_ADMIN_UUID.value]:
             kwargs[TurtlyDataKeys.GAME_ROOM_ADMIN.value] = self._player
         else:
+            # This would never be executed, because server would not send this command to other players
             kwargs[TurtlyDataKeys.GAME_ROOM_ADMIN.value] = ClientSidePlayer(**kwargs)
         kwargs[TurtlyDataKeys.CLIENT_SIDE_GAME_ROOM_TCP_CONNECTION.value] = self._tcp_client
+
         self._room = ClientSideGameRoom(**kwargs)
+        self._room.bindPlayer(kwargs[TurtlyDataKeys.GAME_ROOM_ADMIN.value])
         self._room.start()
         self._focused = False
         print("Room created")
@@ -178,9 +181,12 @@ class TurtlyClient(Thread):
     def _joinRoom(self, **kwargs):
         #TODO: Check if player is already in room
         # Add player to ClientSideGameRoom
-
+        kwargs[TurtlyDataKeys.GAME_ROOM_ADMIN.value] = ClientSidePlayer(**kwargs)
         kwargs[TurtlyDataKeys.CLIENT_SIDE_GAME_ROOM_TCP_CONNECTION.value] = self._tcp_client
+
         self._room = ClientSideGameRoom(**kwargs)
+        self._room.bindPlayer(kwargs[TurtlyDataKeys.GAME_ROOM_ADMIN.value])
+        self._room.bindPlayer(self._player)
         self._room.start()
         self._focused = False
         print("Joined to room")
