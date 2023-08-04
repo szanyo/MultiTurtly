@@ -34,7 +34,7 @@ class ServerSidePlayer(AbstractPlayer, ServerSideNetTurtle, Thread):
                         if self._room.HermesInterpreter.execute_command(msg):
                             wait = False
                         else:
-                            print("Command not found")
+                            print("Command not found in ServerSidePlayer")
                 if wait:
                     time.sleep(0.1)
             time.sleep(0.1)

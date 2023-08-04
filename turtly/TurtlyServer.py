@@ -163,7 +163,7 @@ class TurtlyServer(Thread):
                         if self._hermes_interpreter.execute_command(msg):
                             wait = False
                         else:
-                            print("Command not found")
+                            print("Command not found in TurtlyServer")
             if wait:
                 time.sleep(0.1)
 

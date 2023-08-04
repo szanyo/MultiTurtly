@@ -183,7 +183,6 @@ class TurtlyClient(Thread):
         # Add player to ClientSideGameRoom
         kwargs[TurtlyDataKeys.GAME_ROOM_ADMIN.value] = ClientSidePlayer(**kwargs)
         kwargs[TurtlyDataKeys.CLIENT_SIDE_GAME_ROOM_TCP_CONNECTION.value] = self._tcp_client
-
         self._room = ClientSideGameRoom(**kwargs)
         self._room.bindPlayer(kwargs[TurtlyDataKeys.GAME_ROOM_ADMIN.value])
         self._room.bindPlayer(self._player)
@@ -233,7 +232,7 @@ class TurtlyClient(Thread):
                         if self._hermes_interpreter.execute_command(msg):
                             wait = False
                         else:
-                            print("Command not found")
+                            print("Command not found in TurtlyClient")
                 if wait:
                     time.sleep(0.1)
             else:

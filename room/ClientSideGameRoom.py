@@ -25,7 +25,7 @@ class ClientSideGameRoom(AbstractGameRoom, Thread):
                     if self._hermes_interpreter.execute_command(msg):
                         wait = False
                     else:
-                        print("Command not found")
+                        print("Command not found in ClientSideGameRoom")
             if wait:
                 time.sleep(0.1)
 
