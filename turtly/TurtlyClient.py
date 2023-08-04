@@ -191,9 +191,12 @@ class TurtlyClient(Thread):
         self._focused = False
         print("Joined to room")
 
+    # Only game room commands
+
     def readyToPlay(self):
         print("Ready to play")
-        self._room.Connection.send(
+        self.sync()
+        self._tcp_client.send(
             Hermes(TurtlyGameRoomCommands.READY_TO_PLAY,
                    **{TurtlyDataKeys.PLAYER_UUID.value: self._player.UUID}))
         asyncio.run(self.until_ready_to_play())  # Wait until player is ready to play on server side
@@ -201,6 +204,14 @@ class TurtlyClient(Thread):
 
     def updateInfo(self):
         pass
+
+    def sync(self):
+        print("Syncing game room")
+        self._tcp_client.send(
+            Hermes(TurtlyGameRoomCommands.SYNC,
+                   **{TurtlyDataKeys.PLAYER_UUID.value: self._player.UUID}))
+        asyncio.run(self.until_sync())  # Wait until player is synced everything on client side and server side
+        print("Sync complete")
 
     def close(self):
         self._close = True
@@ -253,6 +264,10 @@ class TurtlyClient(Thread):
 
     async def until_ready_to_play(self):
         while not self._player.Ready:
+            await asyncio.sleep(0.5)
+
+    async def until_sync(self):
+        while not self._player.Room.Synced:
             await asyncio.sleep(0.5)
 
     async def until_room_closed(self):

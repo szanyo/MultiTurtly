@@ -31,7 +31,7 @@ class AbstractGameRoom(Unique, ABC):
         self._locked = False
         self._closed = False
 
-        self._name: str = room_name
+        self._room_name: str = room_name
         self._players = {}
         self._adminPlayer: AbstractPlayer = game_room_admin
 
@@ -43,6 +43,7 @@ class AbstractGameRoom(Unique, ABC):
         self._hermes_interpreter.register_command(TurtlyGameRoomCommands.READY_TO_PLAY, self._readyToPlay)
         self._hermes_interpreter.register_command(TurtlyGameRoomCommands.START_GAME, self._startGame)
         self._hermes_interpreter.register_command(TurtlyGameRoomCommands.IDENTIFICATION, self._identification)
+        self._hermes_interpreter.register_command(TurtlyGameRoomCommands.SYNC, self._sync)
 
     def bindPlayer(self, player):
         if self._locked:
@@ -85,13 +86,17 @@ class AbstractGameRoom(Unique, ABC):
     def _identification(self, *args, **kwargs):
         pass
 
+    @abstractmethod
+    def _sync(self, *args, **kwargs):
+        pass
+
     @property
     def Closed(self) -> bool:
         return self._closed
 
     @property
     def Name(self) -> str:
-        return self._name
+        return self._room_name
 
     @property
     def AdminPlayer(self):

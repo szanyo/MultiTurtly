@@ -24,6 +24,7 @@ class TurtlyGameRoomCommands(TurtlyCommands, Enum):
     READY_TO_PLAY = auto()
     START_GAME = auto()
     IDENTIFICATION = auto()
+    SYNC = auto()
 
 
 class TurtlyClientCommands(TurtlyCommands, Enum):

@@ -44,3 +44,10 @@ class ServerSidePlayer(AbstractPlayer, ServerSideNetTurtle, Thread):
     @property
     def Connection(self):
         return self._connection
+
+    @property
+    def Representation(self):
+        representation = {TurtlyDataKeys.PLAYER_UUID.value: self.UUID,
+                          TurtlyDataKeys.PLAYER_NAME.value: self.Name,
+                          TurtlyDataKeys.PLAYER_READY.value: self._isReady}
+        return representation

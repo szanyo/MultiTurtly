@@ -94,6 +94,7 @@ class Console:
             self._tc.updateInfo()
             time.sleep(5)
 
+
     def _print_main_menu(self):
         print("---Main menu---")
         print("1: Create new game room")
