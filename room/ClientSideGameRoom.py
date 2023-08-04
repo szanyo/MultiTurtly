@@ -33,10 +33,8 @@ class ClientSideGameRoom(AbstractGameRoom, Thread):
             print("Connection closed - something went wrong or server closed connection")
 
     def _readyToPlay(self, *args, **kwargs):
-        self._connection.send(Hermes(TurtlyGameRoomCommands.SYNC.value, {TurtlyDataKeys.GAME_ROOM_UUID.value: self.UUID}))
         self._players[kwargs.get(TurtlyDataKeys.PLAYER_UUID.value, None)].set_ready()
         print("Set ready to play")
-        # TODO: Send to server that player is ready to play
 
     def _startGame(self, *args, **kwargs):
         self.lock()
