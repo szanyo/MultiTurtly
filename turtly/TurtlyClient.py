@@ -283,4 +283,4 @@ class TurtlyClient(Thread):
                     IndentedOutput.print(f"UUID: \t{player.UUID}")
                     IndentedOutput.print(f"Ready: \t{player.Ready}")
                     IndentedOutput.print("")
-                    IndentedOutput.print(f"(dict_id: \t{uuid})")
+                    # IndentedOutput.print(f"(dict_id: \t{uuid})")

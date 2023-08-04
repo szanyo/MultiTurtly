@@ -2,7 +2,8 @@ import asyncio
 import time
 from threading import Thread
 
-from graphics.Graphics import Graphics
+import pyconio
+# from graphics.Graphics import Graphics
 from room.AbstractGameRoom import roomNameValidator
 from turtly.ConsoleContext import ConsoleContext
 from turtly.TurtlyClient import TurtlyClient
@@ -36,6 +37,7 @@ class Console:
         self._tc.join()
 
     def _create_new_game_room(self):
+        pyconio.clrscr()
         print("---Create new game room---")
         created_room_name = ""
         while created_room_name == "":
@@ -54,6 +56,7 @@ class Console:
         self._ready_to_start_game()
 
     def _join_to_game_room(self):
+        pyconio.clrscr()
         joined = False
         while not joined:
             print("---Join to game room---")
@@ -80,6 +83,7 @@ class Console:
                 joined = False
 
     def _ready_to_start_game(self):
+        pyconio.clrscr()
         print("---Ready to start game---")
         print("Press any key to start game")
         input()
@@ -87,13 +91,14 @@ class Console:
         self._lobby()
 
     def _lobby(self):
-        print("---Game loop info---")
-        print("Wait in lobby for other players to join...")
-        print("If everyone is ready, the game will start automatically")
         while True:
+            pyconio.clrscr()
+            print("---Game loop info---")
+            print("Wait in lobby for other players to join...")
+            print("If everyone is ready, the game will start automatically")
             self._tc.sync()
             self._tc.print_lobby()
-            time.sleep(5)
+            time.sleep(10)
 
 
     def _print_main_menu(self):
@@ -123,6 +128,6 @@ if __name__ == "__main__":
     print("Welcome to turtly!")
     print("Connecting to server...")
     console = Console()
-    with Graphics() as graphics:
-        Thread(target=console.main_loop).start()
-        graphics.Window.mainloop()
+    # with Graphics() as graphics:
+    Thread(target=console.main_loop).start()
+    #graphics.Window.mainloop()

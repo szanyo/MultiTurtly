@@ -30,10 +30,10 @@ class Graphics:
         self._observer_collection = ObserverCollection()
         self._initEvents()
 
-        self._wnd.onkey(lambda: self._observer_collection.fire(GraphicsCommands.LEFT), "q")
+        self._wnd.onkey(lambda: self._observer_collection.fire(GraphicsCommands.LEFT), "a")
         self._wnd.onkey(lambda: self._observer_collection.fire(GraphicsCommands.LEFT), "Left")
 
-        self._wnd.onkey(lambda: self._observer_collection.fire(GraphicsCommands.RIGHT), "e")
+        self._wnd.onkey(lambda: self._observer_collection.fire(GraphicsCommands.RIGHT), "d")
         self._wnd.onkey(lambda: self._observer_collection.fire(GraphicsCommands.RIGHT), "Right")
 
         self._wnd.onkey(lambda: self._observer_collection.fire(GraphicsCommands.FORWARD), "w")
