@@ -51,7 +51,6 @@ class Console:
                 print("Invalid room name!")
 
         self._tc.createRoom(created_room_name)
-        self._tc.updateInfo()
         self._ready_to_start_game()
 
     def _join_to_game_room(self):
@@ -74,7 +73,6 @@ class Console:
                     selected_room_name = ""
 
             if self._tc.joinRoom(selected_room_name):
-                self._tc.updateInfo()
                 self._ready_to_start_game()
                 joined = True
             else:
@@ -86,12 +84,15 @@ class Console:
         print("Press any key to start game")
         input()
         self._tc.readyToPlay()
-        self._game_loop_info()
+        self._lobby()
 
-    def _game_loop_info(self):
+    def _lobby(self):
         print("---Game loop info---")
+        print("Wait in lobby for other players to join...")
+        print("If everyone is ready, the game will start automatically")
         while True:
-            self._tc.updateInfo()
+            self._tc.sync()
+            self._tc.print_lobby()
             time.sleep(5)
 
 

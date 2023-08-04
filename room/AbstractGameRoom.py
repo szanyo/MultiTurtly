@@ -107,10 +107,5 @@ class AbstractGameRoom(Unique, ABC):
         return self._players
 
     @property
-    def getPlayersInfo(self):
-        return [{TurtlyDataKeys.GAME_ROOM_ADMIN_NAME.value: player.Name,
-                 TurtlyDataKeys.GAME_ROOM_ADMIN_UUID: player.UUID} for player in self._players]
-
-    @property
     def HermesInterpreter(self):
         return self._hermes_interpreter

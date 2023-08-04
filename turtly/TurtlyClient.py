@@ -201,9 +201,6 @@ class TurtlyClient(Thread):
         asyncio.run(self.until_ready_to_play())  # Wait until player is ready to play on server side
         print("Ready to play complete")
 
-    def updateInfo(self):
-        pass
-
     def sync(self):
         print("Syncing game room")
         self._tcp_client.send(
@@ -273,3 +270,17 @@ class TurtlyClient(Thread):
         while self._room is not None:
             await asyncio.sleep(0.5)
         self._focused = True
+
+    def print_lobby(self):
+        print(f"Room name:\t\t{self._room.Name}")
+        print(f"Room unique id:\t{self._room.UUID}")
+        print(f"Room admin:\t\t{self._room.AdminPlayer.Name}")
+        print(f"Players of room:")
+        with IndentedOutput():
+            for uuid, player in self._room.Players.items():
+                IndentedOutput.print(f"{player.Name}")
+                with IndentedOutput():
+                    IndentedOutput.print(f"UUID: \t{player.UUID}")
+                    IndentedOutput.print(f"Ready: \t{player.Ready}")
+                    IndentedOutput.print("")
+                    IndentedOutput.print(f"(dict_id: \t{uuid})")
