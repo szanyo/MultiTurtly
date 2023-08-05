@@ -5,6 +5,7 @@ from threading import Thread
 import pyconio
 # from graphics.Graphics import Graphics
 from room.AbstractGameRoom import roomNameValidator
+from room.ClientSideGameRoom import ClientSideGameRoomEvents
 from turtly.ConsoleContext import ConsoleContext
 from turtly.TurtlyClient import TurtlyClient
 
@@ -88,18 +89,19 @@ class Console:
         print("Press any key to start game")
         input()
         self._tc.readyToPlay()
-        self._lobby()
+        self._tc.Room.EventHandler.get(ClientSideGameRoomEvents.UPDATE).subscribe(self._on_update_room)
+        self._on_update_room()
 
-    def _lobby(self):
+        # TODO: game loop
         while True:
-            pyconio.clrscr()
-            print("---Game loop info---")
-            print("Wait in lobby for other players to join...")
-            print("If everyone is ready, the game will start automatically")
-            self._tc.sync()
-            self._tc.print_lobby()
-            time.sleep(10)
+            time.sleep(5)
 
+    def _on_update_room(self):
+        pyconio.clrscr()
+        print("---Game loop info---")
+        print("Wait in lobby for other players to join...")
+        print("If everyone is ready, the game will start automatically")
+        self._tc.Room.print_status()
 
     def _print_main_menu(self):
         print("---Main menu---")
@@ -130,4 +132,4 @@ if __name__ == "__main__":
     console = Console()
     # with Graphics() as graphics:
     Thread(target=console.main_loop).start()
-    #graphics.Window.mainloop()
+    # graphics.Window.mainloop()

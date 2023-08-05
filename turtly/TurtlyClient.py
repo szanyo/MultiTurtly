@@ -5,6 +5,7 @@ import sys
 import time
 from threading import Thread
 
+import pyconio
 from definitions.TurtlyCommands import TurtlyServerCommands, TurtlyClientCommands, TurtlyGameRoomCommands
 from definitions.TurtlyDataKeys import TurtlyDataKeys
 from equipments.networking import Networking
@@ -271,16 +272,6 @@ class TurtlyClient(Thread):
             await asyncio.sleep(0.5)
         self._focused = True
 
-    def print_lobby(self):
-        print(f"Room name:\t\t{self._room.Name}")
-        print(f"Room unique id:\t{self._room.UUID}")
-        print(f"Room admin:\t\t{self._room.AdminPlayer.Name}")
-        print(f"Players of room:")
-        with IndentedOutput():
-            for uuid, player in self._room.Players.items():
-                IndentedOutput.print(f"{player.Name}")
-                with IndentedOutput():
-                    IndentedOutput.print(f"UUID: \t{player.UUID}")
-                    IndentedOutput.print(f"Ready: \t{player.Ready}")
-                    IndentedOutput.print("")
-                    # IndentedOutput.print(f"(dict_id: \t{uuid})")
+    @property
+    def Room(self):
+        return self._room
