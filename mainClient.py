@@ -54,6 +54,7 @@ class Console:
                 print("Invalid room name!")
 
         self._tc.createRoom(created_room_name)
+        self._tc.sync()
         self._ready_to_start_game()
 
     def _join_to_game_room(self):
@@ -77,6 +78,7 @@ class Console:
                     selected_room_name = ""
 
             if self._tc.joinRoom(selected_room_name):
+                self._tc.sync()
                 self._ready_to_start_game()
                 joined = True
             else:
