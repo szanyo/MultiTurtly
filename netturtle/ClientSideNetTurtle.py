@@ -2,19 +2,21 @@ import threading
 import time
 from math import radians, cos, sin
 from queue import Queue
-# from turtle import Turtle
+from turtle import Turtle
 
 from definitions.TurtlyDataKeys import TurtlyDataKeys
-# from graphics.Graphics import Graphics, GraphicsCommands
+from graphics.Graphics import Graphics
 from netturtle.AbstractNetTurtle import AbstractNetTurtle
 
+DEFAULT_COLOR_TUPLE = (125, 125, 125)
 
 class ClientSideNetTurtle(AbstractNetTurtle):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        #self._wnd = Graphics().Window
+        self._wnd = Graphics().Window
+        self._t = Turtle()
         self._t.speed(0)
-        self._t.color(kwargs.get(TurtlyDataKeys.PLAYER_COLOR.value, (125, 125, 125)))
+        self._t.color(kwargs.get(TurtlyDataKeys.PLAYER_COLOR.value, DEFAULT_COLOR_TUPLE))
         self._t.shape("turtle")
         self._t.shapesize(stretch_wid=1.5)
         self._t.goto(0, 0)

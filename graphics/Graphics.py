@@ -1,5 +1,4 @@
 from enum import auto
-from threading import Thread
 from turtle import Screen
 
 from equipments.patterns.Observing import ObserverCollection
@@ -24,6 +23,7 @@ class Graphics:
 
     def __init__(self, *args, **kwargs):
         self._wnd = Screen()
+        self._wnd.colormode(255)
         self._wnd.setup(1024, 768)
         self._wnd.title("MultiTurtly")
         self._wnd.bgcolor("black")

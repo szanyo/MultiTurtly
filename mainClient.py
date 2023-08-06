@@ -1,9 +1,10 @@
 import asyncio
 import time
 from threading import Thread
+from turtle import mainloop
 
 import pyconio
-# from graphics.Graphics import Graphics
+from graphics.Graphics import Graphics
 from room.AbstractGameRoom import roomNameValidator
 from room.ClientSideGameRoom import ClientSideGameRoomEvents
 from turtly.ConsoleContext import ConsoleContext
@@ -132,6 +133,8 @@ if __name__ == "__main__":
     print("Welcome to turtly!")
     print("Connecting to server...")
     console = Console()
-    # with Graphics() as graphics:
-    Thread(target=console.main_loop).start()
-    # graphics.Window.mainloop()
+    with Graphics() as graphics:
+        main_thread = Thread(target=console.main_loop)
+        main_thread.start()
+        mainloop()
+        main_thread.join()
