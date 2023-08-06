@@ -21,6 +21,10 @@ Demo outlook of the game.
 
 ![Demo image 2](merch/Demo02.PNG)
 
+And the working graphical user interface with 3 players. yeeeeah!
+
+![Demo image 3](merch/Demo03.PNG)
+
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
@@ -38,7 +42,9 @@ Project started: _2023. 06. 26._
 
 1st milestone: _2023. 08. 04._ (Game room creation, joining, synchronization)
 
-2nd milestone: _2023. 00. 00._()
+2nd milestone: _2023. 08. 07._(Working graphical interface with 3 players)
+
+3rd milestone: _2023. 0. 0._(Gameplay, collision detection, score counting)
 
 Project is: _in development_
 
