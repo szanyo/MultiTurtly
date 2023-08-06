@@ -7,7 +7,7 @@ from turtly.Hermes import Hermes
 class ServerSideGameRoom(AbstractGameRoom):
 
     def __init__(self, *args, **kwargs):
-        super().__init__(**kwargs)
+        super().__init__(*args, **kwargs)
 
     def _send_to_all_players(self, command, type, **kwargs):
         for player in self._players.values():

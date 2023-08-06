@@ -23,6 +23,7 @@ class AbstractGameRoom(Unique, ABC):
         game_room_admin = kwargs.get(TurtlyDataKeys.GAME_ROOM_ADMIN.value, AbstractPlayer())
 
         Unique.__init__(self, room_uuid)
+        ABC.__init__(self)
 
         self.generate_uuid()
 

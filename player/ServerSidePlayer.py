@@ -37,7 +37,7 @@ class ServerSidePlayer(AbstractPlayer, ServerSideNetTurtle, Thread):
                             print("Command not found in ServerSidePlayer")
                 if wait:
                     time.sleep(0.1)
-            time.sleep(0.1)
+            time.sleep(0.01)
 
         print("server closed - exiting now ... (something went wrong or server closed)")
 

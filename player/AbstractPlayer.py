@@ -8,7 +8,8 @@ class AbstractPlayer(Unique, ABC):
     _instance_num = 0
 
     def __init__(self, *args, **kwargs):
-        super().__init__(kwargs.get(TurtlyDataKeys.PLAYER_UUID.value, None))
+        Unique.__init__(self, kwargs.get(TurtlyDataKeys.PLAYER_UUID.value, None))
+        ABC.__init__(self)
         self.generate_uuid()
         self._player_name = kwargs.get(TurtlyDataKeys.PLAYER_NAME.value, "Anonymous_" + str(AbstractPlayer._instance_num))
         self._room = None

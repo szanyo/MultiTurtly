@@ -12,6 +12,7 @@ from equipments.networking import Networking
 from equipments.networking.Networking import CLIENT_CONFIG_FILE_LOCATION, JSONNetworkConfig, NetworkingEvents
 from equipments.networking.TCP.ClientTCP import Client
 from equipments.security.Cryptography import Cryptography, generate_custom_key
+from graphics.Graphics import Graphics, GraphicsCommands
 from player.ClientSidePlayer import ClientSidePlayer
 from room.ClientSideGameRoom import ClientSideGameRoom
 from turtly.Hermes import HermesInterpreter, Hermes
@@ -224,6 +225,47 @@ class TurtlyClient(Thread):
         self.sync()
         print("-> Game started")
 
+    # Game methods
+
+    def updateWindowSize(self):
+        print("-> Updating window size")
+        self._player.updateWindowSize()
+
+    def start_listening_graphic_events(self):
+        print("-> Start listening graphic events")
+        oc = Graphics().ObserverCollection
+        oc.get(GraphicsCommands.LEFT).subscribe(self._left)
+        oc.get(GraphicsCommands.RIGHT).subscribe(self._right)
+        oc.get(GraphicsCommands.FORWARD).subscribe(self._forward)
+        oc.get(GraphicsCommands.ESCAPE).subscribe(self._escape)
+        oc.get(GraphicsCommands.PAUSE).subscribe(self._pause)
+
+    def stop_listening_graphic_events(self):
+        print("-> Stop listening graphic events")
+        oc = Graphics().ObserverCollection
+        oc.get(GraphicsCommands.LEFT).unsubscribe(self._left)
+        oc.get(GraphicsCommands.RIGHT).unsubscribe(self._right)
+        oc.get(GraphicsCommands.FORWARD).unsubscribe(self._forward)
+        oc.get(GraphicsCommands.ESCAPE).unsubscribe(self._escape)
+        oc.get(GraphicsCommands.PAUSE).unsubscribe(self._pause)
+
+    def _left(self):
+        print("-> Left")
+
+    def _right(self):
+        print("-> Right")
+
+    def _forward(self):
+        print("-> Forward")
+
+    def _escape(self):
+        print("-> Escape")
+
+    def _pause(self):
+        print("-> Pause")
+
+    # Program methods
+
     def close(self):
         self._close = True
         self._tcp_client.close()
@@ -255,35 +297,35 @@ class TurtlyClient(Thread):
 
     async def until_connection_has_become_alive(self):
         while not self._tcp_client.is_connected():
-            await asyncio.sleep(0.5)
+            await asyncio.sleep(0.1)
 
     async def until_new_player_registered(self):
         while self._player is None:
-            await asyncio.sleep(0.5)
+            await asyncio.sleep(0.1)
 
     async def until_room_list_updated(self):
         while not self._roomListUpToDate:
-            await asyncio.sleep(0.5)
+            await asyncio.sleep(0.1)
 
     async def until_player_joined_to_room(self):
         if self._player is not None:
             while self._player.Room is None:
-                await asyncio.sleep(0.5)
+                await asyncio.sleep(0.1)
         else:
             print("Player not registered yet")
             print("Something went wrong ...")
 
     async def until_ready_to_play(self):
         while not self._player.Ready:
-            await asyncio.sleep(0.5)
+            await asyncio.sleep(0.1)
 
     async def until_sync(self):
         while not self._player.Room.Synced:
-            await asyncio.sleep(0.5)
+            await asyncio.sleep(0.1)
 
     async def until_room_focused(self):
         while self._room is not None:
-            await asyncio.sleep(0.5)
+            await asyncio.sleep(0.1)
         self._focused = True
 
     def isAdmin(self):

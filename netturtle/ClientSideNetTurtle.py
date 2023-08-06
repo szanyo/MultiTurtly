@@ -22,14 +22,12 @@ class ClientSideNetTurtle(AbstractNetTurtle):
         self._t.goto(0, 0)
         self._t.pendown()
         self.movement_queue = Queue()
-        self._empty_movement_thread = threading.Thread(target=self._empty_movement_queue)
-        self._empty_movement_thread.start()
+        # self._empty_movement_thread = threading.Thread(target=self._empty_movement_queue)
+        # self._empty_movement_thread.start()
 
-    def _empty_movement_queue(self):
-        while True:
-            while not self.movement_queue.empty():
-                self.movement_queue.get()()
-            time.sleep(0.1)
+    def empty_movement_queue(self):
+        while not self.movement_queue.empty():
+            self.movement_queue.get()()
 
     def turn_left(self):
         self.movement_queue.put(lambda: self._left())

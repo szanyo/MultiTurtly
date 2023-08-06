@@ -124,15 +124,20 @@ class Console:
                     break
                 else:
                     print("Wait for other players to be ready!")
-        else:
-            while not self._tc.Room.Started:
-                time.sleep(0.5)
+        while not self._tc.Room.Started:
+            time.sleep(0.1)
 
         # Unsubscribe from room update event
         self._tc.Room.EventHandler.get(ClientSideGameRoomEvents.UPDATE).unsubscribe(self._on_update_room_ready)
 
+        self._tc.start_listening_graphic_events()
+
+        self._tc.updateWindowSize()
+        
         # Start game loop
         self._tc.Room.gameLoop()
+        
+        self._tc.stop_listening_graphic_events()
 
         # TODO: back to game room menu
 

@@ -5,7 +5,8 @@ from player.AbstractPlayer import AbstractPlayer
 
 class ClientSidePlayer(AbstractPlayer, ClientSideNetTurtle):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        AbstractPlayer.__init__(self, *args, **kwargs)
+        ClientSideNetTurtle.__init__(self, *args, **kwargs)
 
     def sync(self, representation):
         if self._uuid != representation.get(TurtlyDataKeys.PLAYER_UUID.value, None):

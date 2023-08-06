@@ -4,7 +4,8 @@ from threading import Thread
 
 import pyconio
 from definitions.TurtlyDataKeys import TurtlyDataKeys
-from equipments.patterns.Observing import Observer, ObserverCollection
+from equipments.patterns.Observing import  ObserverCollection
+from graphics.Graphics import GraphicsCommands, Graphics
 from player.ClientSidePlayer import ClientSidePlayer
 from room.AbstractGameRoom import AbstractGameRoom
 from turtly.Hermes import Hermes
@@ -47,10 +48,11 @@ class ClientSideGameRoom(AbstractGameRoom, Thread):
             print("Connection closed - something went wrong or server closed connection")
 
     def gameLoop(self):
-        # TODO: implement game loop
-        while True:
-            print("-> Game loop")
-            time.sleep(1)
+        print("-> Game loop")
+        while self._started:
+            for player in self._players.values():
+                player.empty_movement_queue()
+            time.sleep(0.01)
 
     def _readyToPlay(self, *args, **kwargs):
         self._players[kwargs.get(TurtlyDataKeys.PLAYER_UUID.value, None)].set_ready()
