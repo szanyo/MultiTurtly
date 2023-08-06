@@ -25,6 +25,11 @@ class TurtlyGameRoomCommands(TurtlyCommands, Enum):
     START_GAME = auto()
     IDENTIFICATION = auto()
     SYNC = auto()
+    TURN_LEFT = auto()
+    TURN_RIGHT = auto()
+    MOVE_FORWARD = auto()
+    PAUSE = auto()
+    ESCAPE = auto()
 
 
 class TurtlyClientCommands(TurtlyCommands, Enum):

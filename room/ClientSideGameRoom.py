@@ -110,6 +110,24 @@ class ClientSideGameRoom(AbstractGameRoom, Thread):
             print("-> Sync failed")
             print("-> Invalid players representation")
 
+    def _turn_left(self, *args, **kwargs):
+        self._players[kwargs.get(TurtlyDataKeys.PLAYER_UUID.value, None)].turn_left()
+        print("-> Turned left")
+
+    def _turn_right(self, *args, **kwargs):
+        self._players[kwargs.get(TurtlyDataKeys.PLAYER_UUID.value, None)].turn_right()
+        print("-> Turned right")
+
+    def _move_forward(self, *args, **kwargs):
+        self._players[kwargs.get(TurtlyDataKeys.PLAYER_UUID.value, None)].move_forward()
+        print("-> Moved forward")
+
+    def _pause(self, *args, **kwargs):
+        print("-> Paused not implemented yet")
+
+    def _escape(self, *args, **kwargs):
+        print("-> Escape not implemented yet")
+
     @property
     def Connection(self):
         return self._connection

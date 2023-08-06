@@ -30,6 +30,8 @@ class AbstractGameRoom(Unique, ABC):
         self._locked = False
         self._closed = False
         self._started = False
+        self._paused = False
+        self._escaped = False
 
         self._room_name: str = room_name
         self._players = {}
@@ -44,6 +46,11 @@ class AbstractGameRoom(Unique, ABC):
         self._hermes_interpreter.register_command(TurtlyGameRoomCommands.START_GAME, self._startGame)
         self._hermes_interpreter.register_command(TurtlyGameRoomCommands.IDENTIFICATION, self._identification)
         self._hermes_interpreter.register_command(TurtlyGameRoomCommands.SYNC, self._sync)
+        self._hermes_interpreter.register_command(TurtlyGameRoomCommands.TURN_LEFT, self._turn_left)
+        self._hermes_interpreter.register_command(TurtlyGameRoomCommands.TURN_RIGHT, self._turn_right)
+        self._hermes_interpreter.register_command(TurtlyGameRoomCommands.MOVE_FORWARD, self._move_forward)
+        self._hermes_interpreter.register_command(TurtlyGameRoomCommands.PAUSE, self._pause)
+        self._hermes_interpreter.register_command(TurtlyGameRoomCommands.ESCAPE, self._escape)
 
     def bindPlayer(self, player):
         if self._locked:
@@ -94,6 +101,26 @@ class AbstractGameRoom(Unique, ABC):
 
     @abstractmethod
     def _sync(self, *args, **kwargs):
+        pass
+
+    @abstractmethod
+    def _turn_left(self, *args, **kwargs):
+        pass
+
+    @abstractmethod
+    def _turn_right(self, *args, **kwargs):
+        pass
+
+    @abstractmethod
+    def _move_forward(self, *args, **kwargs):
+        pass
+
+    @abstractmethod
+    def _pause(self, *args, **kwargs):
+        pass
+
+    @abstractmethod
+    def _escape(self, *args, **kwargs):
         pass
 
     @property

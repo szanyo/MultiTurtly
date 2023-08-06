@@ -35,7 +35,7 @@ class ClientSideNetTurtle(AbstractNetTurtle):
     def turn_right(self):
         self.movement_queue.put(lambda: self._right())
 
-    def forward(self):
+    def move_forward(self):
         self.movement_queue.put(lambda: self._forward())
 
     def _left(self):

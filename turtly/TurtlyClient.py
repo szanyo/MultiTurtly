@@ -229,7 +229,9 @@ class TurtlyClient(Thread):
 
     def updateWindowSize(self):
         print("-> Updating window size")
-        self._player.updateWindowSize()
+        players = self._room.Players.values()
+        for player in players:
+            player.updateWindowSize()
 
     def start_listening_graphic_events(self):
         print("-> Start listening graphic events")
@@ -251,18 +253,33 @@ class TurtlyClient(Thread):
 
     def _left(self):
         print("-> Left")
+        self._tcp_client.send(
+            Hermes(TurtlyGameRoomCommands.TURN_LEFT,
+                   **{TurtlyDataKeys.PLAYER_UUID.value: self._player.UUID}))
 
     def _right(self):
         print("-> Right")
+        self._tcp_client.send(
+            Hermes(TurtlyGameRoomCommands.TURN_RIGHT,
+                   **{TurtlyDataKeys.PLAYER_UUID.value: self._player.UUID}))
 
     def _forward(self):
         print("-> Forward")
+        self._tcp_client.send(
+            Hermes(TurtlyGameRoomCommands.MOVE_FORWARD,
+                   **{TurtlyDataKeys.PLAYER_UUID.value: self._player.UUID}))
 
     def _escape(self):
         print("-> Escape")
+        self._tcp_client.send(
+            Hermes(TurtlyGameRoomCommands.ESCAPE,
+                   **{TurtlyDataKeys.PLAYER_UUID.value: self._player.UUID}))
 
     def _pause(self):
         print("-> Pause")
+        self._tcp_client.send(
+            Hermes(TurtlyGameRoomCommands.PAUSE,
+                   **{TurtlyDataKeys.PLAYER_UUID.value: self._player.UUID}))
 
     # Program methods
 

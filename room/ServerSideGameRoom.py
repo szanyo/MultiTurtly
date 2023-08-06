@@ -61,3 +61,33 @@ class ServerSideGameRoom(AbstractGameRoom):
         self._send_to_all_players(TurtlyGameRoomCommands.SYNC,
                                   TurtlyCommandsType.RESPONSE,
                                   **new_kwargs)
+
+    def _turn_left(self, *args, **kwargs):
+        print("-> Turn left", args, kwargs)
+        self._send_to_all_players(TurtlyGameRoomCommands.TURN_LEFT,
+                                  TurtlyCommandsType.RESPONSE,
+                                  **kwargs)
+
+    def _turn_right(self, *args, **kwargs):
+        print("-> Turn right", args, kwargs)
+        self._send_to_all_players(TurtlyGameRoomCommands.TURN_RIGHT,
+                                  TurtlyCommandsType.RESPONSE,
+                                  **kwargs)
+
+    def _move_forward(self, *args, **kwargs):
+        print("-> Move forward", args, kwargs)
+        self._send_to_all_players(TurtlyGameRoomCommands.MOVE_FORWARD,
+                                  TurtlyCommandsType.RESPONSE,
+                                  **kwargs)
+
+    def _pause(self, *args, **kwargs):
+        print("-> Pause", args, kwargs)
+        self._send_to_all_players(TurtlyGameRoomCommands.PAUSE,
+                                  TurtlyCommandsType.RESPONSE,
+                                  **kwargs)
+
+    def _escape(self, *args, **kwargs):
+        print("-> Escape", args, kwargs)
+        self._send_to_all_players(TurtlyGameRoomCommands.ESCAPE,
+                                  TurtlyCommandsType.RESPONSE,
+                                  **kwargs)
