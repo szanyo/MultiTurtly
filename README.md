@@ -17,6 +17,10 @@ Working network connections between 3 players.
 
 ![Demo image 1](merch/Demo01.PNG)
 
+Demo outlook of the game.
+
+![Demo image 2](merch/Demo02.PNG)
+
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
