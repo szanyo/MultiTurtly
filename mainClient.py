@@ -39,29 +39,39 @@ class Console:
         self._tc.join()
 
     def _create_new_game_room(self):
-        pyconio.clrscr()
-        print("---Create new game room---")
-        created_room_name = ""
-        while created_room_name == "":
-            self._print_create_controller()
-            created_room_name = input()
+        created = False
+        while not created:
+            pyconio.clrscr()
+            print("---Create new game room---")
+            created_room_name = ""
+            while created_room_name == "":
+                self._print_create_controller()
+                created_room_name = input()
 
-            if created_room_name == "0":
-                return
-            elif created_room_name == "-1":
-                exit()
-            if not roomNameValidator(created_room_name):
-                created_room_name = ""
-                print("Invalid room name!")
+                if created_room_name == "0":
+                    return
+                elif created_room_name == "-1":
+                    exit()
 
-        self._tc.createRoom(created_room_name)
-        self._tc.sync()
-        self._ready_to_start_game()
+                if not roomNameValidator(created_room_name):
+                    created_room_name = ""
+                    print("Invalid room name!")
+
+            self._tc.updateRoomList()
+            asyncio.run(self._tc.until_room_list_updated())
+
+            if self._tc.createRoom(created_room_name):
+                self._tc.sync()
+                self._ready_to_start_game()
+                created = True
+            else:
+                print("Room already exists!")
+                created = False
 
     def _join_to_game_room(self):
-        pyconio.clrscr()
         joined = False
         while not joined:
+            pyconio.clrscr()
             print("---Join to game room---")
             selected_room_name = ""
             while selected_room_name == "":
@@ -87,24 +97,63 @@ class Console:
                 joined = False
 
     def _ready_to_start_game(self):
-        pyconio.clrscr()
-        print("---Ready to start game---")
-        print("Press any key to start game")
-        input()
-        self._tc.readyToPlay()
+        """Wait for admin player to start game"""
+
+        # Subscribe to room update event that will be redrawing the screen
         self._tc.Room.EventHandler.get(ClientSideGameRoomEvents.UPDATE).subscribe(self._on_update_room)
         self._on_update_room()
 
-        # TODO: game loop
-        while True:
-            time.sleep(5)
+        # Wait for player to press any key to send ready signal
+        input()
+
+        # Unsubscribe from room update event
+        self._tc.Room.EventHandler.get(ClientSideGameRoomEvents.UPDATE).unsubscribe(self._on_update_room)
+
+        # Subscribe to room update event that will be redrawing the screen after ready signal
+        # This time the screen will be different because the player is ready and waiting for other players
+        self._tc.Room.EventHandler.get(ClientSideGameRoomEvents.UPDATE).subscribe(self._on_update_room_ready)
+
+        self._tc.readyToPlay()
+
+        # Wait for admin player to start game
+        if self._tc.isAdmin():
+            while True:
+                input()
+                if all(player.Ready for player in self._tc.Room.Players.values()):
+                    self._tc.startGame()
+                    break
+                else:
+                    print("Wait for other players to be ready!")
+        else:
+            while not self._tc.Room.Started:
+                time.sleep(0.5)
+
+        # Unsubscribe from room update event
+        self._tc.Room.EventHandler.get(ClientSideGameRoomEvents.UPDATE).unsubscribe(self._on_update_room_ready)
+
+        # Start game loop
+        self._tc.Room.gameLoop()
+
+        # TODO: back to game room menu
 
     def _on_update_room(self):
         pyconio.clrscr()
+        print("---Ready to start game---")
+        self._tc.Room.print_status()
+        print("Press any key if you are ready to start the game")
+
+    def _on_update_room_ready(self):
+        pyconio.clrscr()
         print("---Game loop info---")
         print("Wait in lobby for other players to join...")
-        print("If everyone is ready, the game will start automatically")
+        print()
         self._tc.Room.print_status()
+        if self._tc.isAdmin():
+            print("You are the ADMIN of this game room")
+            print("Press any key to start the game if everyone is ready")
+        else:
+            print("Wait!!!")
+            print("If everyone is ready, the game will be started by ADMIN player")
 
     def _print_main_menu(self):
         print("---Main menu---")

@@ -46,13 +46,21 @@ class ClientSideGameRoom(AbstractGameRoom, Thread):
         if not self._closed:
             print("Connection closed - something went wrong or server closed connection")
 
+    def gameLoop(self):
+        # TODO: implement game loop
+        while True:
+            print("-> Game loop")
+            time.sleep(1)
+
     def _readyToPlay(self, *args, **kwargs):
         self._players[kwargs.get(TurtlyDataKeys.PLAYER_UUID.value, None)].set_ready()
         self._event_handler.fire_all()
-        print("Set ready to play")
+        print("-> Set ready to play")
 
     def _startGame(self, *args, **kwargs):
         self.lock()
+        self._event_handler.fire_all()
+        print("-> Game started")
 
     def _identification(self, *args, **kwargs):
         pass
@@ -72,14 +80,15 @@ class ClientSideGameRoom(AbstractGameRoom, Thread):
 
             self._locked = kwargs.get(TurtlyDataKeys.GAME_ROOM_LOCKED.value, False)
             self._closed = kwargs.get(TurtlyDataKeys.GAME_ROOM_CLOSED.value, False)
+            self._started = kwargs.get(TurtlyDataKeys.GAME_ROOM_STARTED.value, False)
 
             self._synced = True
 
             self._event_handler.fire_all()
-            print("Synced")
+            print("-> Synced")
         else:
-            print("Sync failed")
-            print("Invalid game room uuid")
+            print("-> Sync failed")
+            print("-> Invalid game room uuid")
 
     def _sync_players(self, representations):
         if representations != "!!!Synchronization failure!!!":
@@ -96,8 +105,8 @@ class ClientSideGameRoom(AbstractGameRoom, Thread):
                     self._players[player_representation.get(TurtlyDataKeys.PLAYER_UUID.value, None)].sync(
                         player_representation)
         else:
-            print("Sync failed")
-            print("Invalid players representation")
+            print("-> Sync failed")
+            print("-> Invalid players representation")
 
     @property
     def Connection(self):
@@ -108,6 +117,10 @@ class ClientSideGameRoom(AbstractGameRoom, Thread):
         return self._synced
 
     @property
+    def Started(self):
+        return self._started
+
+    @property
     def EventHandler(self):
         return self._event_handler
 
@@ -115,6 +128,9 @@ class ClientSideGameRoom(AbstractGameRoom, Thread):
         print(f"Room name:\t\t{self.Name}")
         print(f"Room unique id:\t{self._uuid}")
         print(f"Room admin:\t\t{self._adminPlayer.Name}")
+        print(f"Room locked:\t\t{self._locked}")
+        print(f"Room closed:\t\t{self._closed}")
+        print(f"Room started:\t\t{self._started}")
         print(f"Players of room:")
         with IndentedOutput():
             for uuid, player in self._players.items():

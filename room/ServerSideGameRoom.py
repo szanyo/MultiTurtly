@@ -25,20 +25,27 @@ class ServerSideGameRoom(AbstractGameRoom):
                    ))
 
     def _readyToPlay(self, *args, **kwargs):
-        print("Set player ready to play", args, kwargs)
+        print("-> Set player ready to play", args, kwargs)
         self._players[kwargs.get(TurtlyDataKeys.PLAYER_UUID.value, None)].set_ready()
         self._send_to_all_players(TurtlyGameRoomCommands.READY_TO_PLAY,
                                   TurtlyCommandsType.RESPONSE,
                                   **kwargs)
 
     def _startGame(self, *args, **kwargs):
+        print("-> Start game", args, kwargs)
         self.lock()
+        print("-> Room locked", args, kwargs)
+        self.started()
+        print("-> Room started", args, kwargs)
+        self._send_to_all_players(TurtlyGameRoomCommands.START_GAME,
+                                  TurtlyCommandsType.RESPONSE,
+                                  **kwargs)
 
     def _identification(self, *args, **kwargs):
         pass
 
     def _sync(self, *args, **kwargs):
-        print("Synced", args, kwargs)
+        print("-> Synced", args, kwargs)
         player_representations = {}
         for key, player in self._players.items():
             player_representations[key] = player.Representation
@@ -48,7 +55,8 @@ class ServerSideGameRoom(AbstractGameRoom):
                       TurtlyDataKeys.GAME_ROOM_ADMIN_NAME.value: self._adminPlayer.Name,
                       TurtlyDataKeys.GAME_ROOM_ADMIN_UUID.value: self._adminPlayer.UUID,
                       TurtlyDataKeys.GAME_ROOM_LOCKED.value: self._locked,
-                      TurtlyDataKeys.GAME_ROOM_CLOSED.value: self._closed}
+                      TurtlyDataKeys.GAME_ROOM_CLOSED.value: self._closed,
+                      TurtlyDataKeys.GAME_ROOM_STARTED.value: self._started}
 
         self._send_to_all_players(TurtlyGameRoomCommands.SYNC,
                                   TurtlyCommandsType.RESPONSE,

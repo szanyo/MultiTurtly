@@ -84,7 +84,7 @@ class TurtlyServer(Thread):
             self._list_game_rooms)
 
     def _new_player_registration(self, *args, **kwargs):
-        print("New player registration", args, kwargs)
+        print("-> New player registration", args, kwargs)
         new_player = ServerSidePlayer(*args, **kwargs)
         new_player.start()
         self._players[new_player.UUID] = new_player
@@ -97,7 +97,7 @@ class TurtlyServer(Thread):
                    ))
 
     def _open_new_game_room(self, *args, **kwargs):
-        print("Opening new game room", args, kwargs)
+        print("-> Opening new game room", args, kwargs)
         admin_player = self._players[kwargs[TurtlyDataKeys.GAME_ROOM_ADMIN_UUID.value]]
         kwargs[TurtlyDataKeys.GAME_ROOM_ADMIN.value] = admin_player
         new_room = ServerSideGameRoom(*args, **kwargs)
@@ -116,7 +116,7 @@ class TurtlyServer(Thread):
                    ))
 
     def _join_to_game_room(self, *args, **kwargs):
-        print("Joining to game room", args, kwargs)
+        print("-> Joining to game room", args, kwargs)
         game_room = self._rooms[kwargs[TurtlyDataKeys.GAME_ROOM_UUID.value]]
         player = self._players[kwargs[TurtlyDataKeys.PLAYER_UUID.value]]
         game_room.bindPlayer(player)
@@ -133,7 +133,7 @@ class TurtlyServer(Thread):
                    ))
 
     def _list_game_rooms(self, *args, **kwargs):
-        print("Listing game rooms", args, kwargs)
+        print("-> Listing game rooms", args, kwargs)
         game_room_list = [{TurtlyDataKeys.GAME_ROOM_UUID.value: room.UUID,
                            TurtlyDataKeys.GAME_ROOM_NAME.value: room.Name,
                            TurtlyDataKeys.GAME_ROOM_ADMIN_NAME.value: room.AdminPlayer.Name,

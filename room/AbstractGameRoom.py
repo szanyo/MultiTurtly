@@ -28,6 +28,7 @@ class AbstractGameRoom(Unique, ABC):
 
         self._locked = False
         self._closed = False
+        self._started = False
 
         self._room_name: str = room_name
         self._players = {}
@@ -71,6 +72,12 @@ class AbstractGameRoom(Unique, ABC):
 
     def unlock(self):
         self._locked = False
+
+    def started(self):
+        self._started = True
+
+    def finished(self):
+        self._started = False
 
     @abstractmethod
     def _readyToPlay(self, *args, **kwargs):

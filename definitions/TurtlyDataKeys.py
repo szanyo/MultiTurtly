@@ -11,6 +11,7 @@ class TurtlyDataKeys(Enum):
     GAME_ROOM_UUID = "game_room_uuid"
     GAME_ROOM_LOCKED = "game_room_locked"
     GAME_ROOM_CLOSED = "game_room_closed"
+    GAME_ROOM_STARTED = "game_room_started"
     GAME_ROOM_PLAYERS_REPRESENTATION = "game_room_players_representation"
     GAME_ROOM = "game_room"
     GAME_ROOMS = "game_rooms"
