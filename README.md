@@ -2,13 +2,35 @@
 
 MultiTurtly is a Python program family for creating multiple turtles and playing over a network.
 
-## Usage
+## Detailed Description
 
 ```
 You can create a game room and join it with multiple friends. 
 You will also get a turtle and move it around the screen. 
 If two turtles collide, your score will increase by one. 
 The first player to reach 10 points wins.
+```
+
+## Installation
+
+Use the package manager [pip](https://pip.pypa.io/en/stable/) to install the required packages.
+(Later I will create a requirements.txt file for this.)
+
+```bash 
+Working on this...
+```
+
+
+### Warning!
+```
+The Server program is only working if you register it to the firewall.
+- Give full accesspath of the program's .exe file in the firewall settings. (\runnable folder)
+    OR 
+  if you are running the .py files, give full accesspath of the python.exe file. (Not recommended, because it is not safe.)
+- Enable
+- Both ways
+- TCP and UDP
+- Other settings are would be any, not specific.
 ```
 
 ## Demo images
@@ -42,9 +64,11 @@ Project started: _2023. 06. 26._
 
 1st milestone: _2023. 08. 04._ (Game room creation, joining, synchronization)
 
-2nd milestone: _2023. 08. 07._(Working graphical interface with 3 players)
+2nd milestone: _2023. 08. 07._ (Working graphical interface with 3 players)
 
-3rd milestone: _2023. 0. 0._(Gameplay, collision detection, score counting)
+3rd milestone: _2023. 08. 12._ (Tested on LAN, working on WAN, firewall settings, some bugfixes)
+
+4th milestone: _2023. 0. 0._ (Gameplay, score, winner)
 
 Project is: _in development_
 

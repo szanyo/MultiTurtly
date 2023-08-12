@@ -11,16 +11,21 @@ from netturtle.AbstractNetTurtle import AbstractNetTurtle
 
 DEFAULT_COLOR_TUPLE = (125, 125, 125)
 
+
 class ClientSideNetTurtle(AbstractNetTurtle):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._wnd = None
+        self._empty_movement_thread = None
+        self._wnd = kwargs.get("wnd", None)
         self._turtle_instance = None
-        self._turtle_color = kwargs.get(TurtlyDataKeys.PLAYER_COLOR.value, (randint(0, 255), randint(0, 255), randint(0, 255)))
+        self._turtle_color = kwargs.get(TurtlyDataKeys.PLAYER_COLOR.value,
+                                        (randint(0, 255), randint(0, 255), randint(0, 255)))
         self.movement_queue = Queue()
-        # self._empty_movement_thread = threading.Thread(target=self._empty_movement_queue)
-        # self._empty_movement_thread.start()
-        
+
+    def testing(self):
+        self._empty_movement_thread = threading.Thread(target=self._empty_movement_queue)
+        self._empty_movement_thread.start()
+
     def initializeTurtle(self):
         self._wnd = Graphics().Window
         self._turtle_instance = Turtle()
@@ -33,7 +38,7 @@ class ClientSideNetTurtle(AbstractNetTurtle):
 
         self.updateWindowSize()
 
-    def empty_movement_queue(self):
+    def _empty_movement_queue(self):
         while not self.movement_queue.empty():
             self.movement_queue.get()()
 

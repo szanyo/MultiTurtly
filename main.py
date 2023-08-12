@@ -7,14 +7,13 @@ from netturtle.ClientSideNetTurtle import ClientSideNetTurtle
 score = 0
 exit = False
 wnd = Screen()
-t = ClientSideNetTurtle(wnd)
-
+t = ClientSideNetTurtle(**{"wnd": wnd})
 
 def game_loop():
     global score, exit, t
 
     while not exit:
-        t.forward()
+        t.move_forward()
         score += 1
         if score == 100:
             exit = True
