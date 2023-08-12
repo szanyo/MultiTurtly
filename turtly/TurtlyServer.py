@@ -29,7 +29,7 @@ def init_config():
     file_path = os.path.join(path(), SERVER_CONFIG_FILE_LOCATION)
     json_container = JSONNetworkConfig(file_path)
     kwargs = json_container.toDict()
-    if kwargs["server_ip"] == "" or int(kwargs["server_ip"]) == 0:
+    if kwargs["server_ip"] == "" or int(kwargs["server_port"]) == 0:
 
         print("No config file found")
         print("(Press enter to continue with localhost)")
