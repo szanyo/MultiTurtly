@@ -1,5 +1,5 @@
 from enum import auto
-from turtle import Screen
+from turtle import Screen, done
 
 from equipments.patterns.Observing import ObserverCollection
 
@@ -22,13 +22,17 @@ class Graphics:
         return cls._graphics
 
     def __init__(self, *args, **kwargs):
+        self._wnd = None
+        self._observer_collection = ObserverCollection()
+        self.initialize()
+        self._initEvents()
+
+    def initialize(self):
         self._wnd = Screen()
         self._wnd.colormode(255)
         self._wnd.setup(1024, 768)
         self._wnd.title("MultiTurtly")
         self._wnd.bgcolor("black")
-        self._observer_collection = ObserverCollection()
-        self._initEvents()
 
         self._wnd.onkey(lambda: self._observer_collection.fire(GraphicsCommands.LEFT), "a")
         self._wnd.onkey(lambda: self._observer_collection.fire(GraphicsCommands.LEFT), "Left")
@@ -59,10 +63,13 @@ class Graphics:
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
-        self._wnd.bye()
+        done()
+        if self._wnd is not None:
+            self._wnd.bye()
 
     def clear(self):
-        self._wnd.clear()
+        if self._wnd is not None:
+            self._wnd.clear()
 
     @property
     def Window(self):

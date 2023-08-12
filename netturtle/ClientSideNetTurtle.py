@@ -2,6 +2,7 @@ import threading
 import time
 from math import radians, cos, sin
 from queue import Queue
+from random import randint
 from turtle import Turtle
 
 from definitions.TurtlyDataKeys import TurtlyDataKeys
@@ -13,17 +14,24 @@ DEFAULT_COLOR_TUPLE = (125, 125, 125)
 class ClientSideNetTurtle(AbstractNetTurtle):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._wnd = Graphics().Window
-        self._t = Turtle()
-        self._t.speed(0)
-        self._t.color(kwargs.get(TurtlyDataKeys.PLAYER_COLOR.value, DEFAULT_COLOR_TUPLE))
-        self._t.shape("turtle")
-        self._t.shapesize(stretch_wid=1.5)
-        self._t.goto(0, 0)
-        self._t.pendown()
+        self._wnd = None
+        self._turtle_instance = None
+        self._turtle_color = kwargs.get(TurtlyDataKeys.PLAYER_COLOR.value, (randint(0, 255), randint(0, 255), randint(0, 255)))
         self.movement_queue = Queue()
         # self._empty_movement_thread = threading.Thread(target=self._empty_movement_queue)
         # self._empty_movement_thread.start()
+        
+    def initializeTurtle(self):
+        self._wnd = Graphics().Window
+        self._turtle_instance = Turtle()
+        self._turtle_instance.speed(0)
+        self._turtle_instance.color(self._turtle_color)
+        self._turtle_instance.shape("turtle")
+        self._turtle_instance.shapesize(stretch_wid=1.5)
+        self._turtle_instance.goto(0, 0)
+        self._turtle_instance.pendown()
+
+        self.updateWindowSize()
 
     def empty_movement_queue(self):
         while not self.movement_queue.empty():
@@ -42,19 +50,19 @@ class ClientSideNetTurtle(AbstractNetTurtle):
         angle = 45
         self._direction += angle
         self._direction %= 360
-        self._t.left(angle)
+        self._turtle_instance.left(angle)
 
     def _right(self):
         angle = 45
         self._direction -= angle
         self._direction %= 360
-        self._t.right(angle)
+        self._turtle_instance.right(angle)
 
     def _forward(self):
         # print(self._unit)
         future_moving_unit = self._unit if (self._direction % 90 == 0) else self._unit * pow(2, 0.5)
-        future_x = self._t.xcor() + future_moving_unit * cos(radians(self._direction))
-        future_y = self._t.ycor() + future_moving_unit * sin(radians(self._direction))
+        future_x = self._turtle_instance.xcor() + future_moving_unit * cos(radians(self._direction))
+        future_y = self._turtle_instance.ycor() + future_moving_unit * sin(radians(self._direction))
 
         # print(f"direction: {self._direction}")
         # print(f"future_moving_unit: {future_moving_unit}")
@@ -62,7 +70,7 @@ class ClientSideNetTurtle(AbstractNetTurtle):
         # print(f"future_y: {future_y} half_height: {self._half_height}")
 
         if self._half_width > future_x > -self._half_width and self._half_height > future_y > -self._half_height:
-            self._t.forward(future_moving_unit)
+            self._turtle_instance.forward(future_moving_unit)
 
         # print(f"current_x: {self._t.xcor()}")
         # print(f"current_y: {self._t.ycor()}")

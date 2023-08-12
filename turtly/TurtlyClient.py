@@ -188,7 +188,6 @@ class TurtlyClient(Thread):
         return True
 
     def _joinRoom(self, **kwargs):
-        # TODO: Check if player is already in room
         kwargs[TurtlyDataKeys.GAME_ROOM_ADMIN.value] = ClientSidePlayer(**kwargs)
         kwargs[TurtlyDataKeys.CLIENT_SIDE_GAME_ROOM_TCP_CONNECTION.value] = self._tcp_client
         self._room = ClientSideGameRoom(**kwargs)
@@ -226,12 +225,6 @@ class TurtlyClient(Thread):
         print("-> Game started")
 
     # Game methods
-
-    def updateWindowSize(self):
-        print("-> Updating window size")
-        players = self._room.Players.values()
-        for player in players:
-            player.updateWindowSize()
 
     def start_listening_graphic_events(self):
         print("-> Start listening graphic events")

@@ -61,6 +61,10 @@ class ClientSideGameRoom(AbstractGameRoom, Thread):
 
     def _startGame(self, *args, **kwargs):
         self.lock()
+        Graphics().clear()
+        Graphics().initialize()
+        for player in self._players.values():
+            player.initializeTurtle()
         self._event_handler.fire_all()
         print("-> Game started")
 

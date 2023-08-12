@@ -131,8 +131,6 @@ class Console:
         self._tc.Room.EventHandler.get(ClientSideGameRoomEvents.UPDATE).unsubscribe(self._on_update_room_ready)
 
         self._tc.start_listening_graphic_events()
-
-        self._tc.updateWindowSize()
         
         # Start game loop
         self._tc.Room.gameLoop()
