@@ -1,20 +1,20 @@
+import threading
 from threading import Thread
 from time import sleep
 from turtle import Screen, mainloop
 
+from graphics.Graphics import Graphics, GraphicsCommands
 from netturtle.ClientSideNetTurtle import ClientSideNetTurtle
 
 score = 0
 exit = False
-wnd = Screen()
-t = ClientSideNetTurtle(**{"wnd": wnd})
 
 def game_loop():
-    global score, exit, t
+    global score, exit
 
     while not exit:
-        t.move_forward()
         score += 1
+        print(score)
         if score == 100:
             exit = True
             break
@@ -22,15 +22,37 @@ def game_loop():
 
 
 def exit_loop():
-    global exit, wnd, t
+    global exit
     exit = True
-    wnd.bye()
 
 
 if __name__ == "__main__":
-    wnd.setup(1024, 768)
-    wnd.title("MultiTurtly")
-    wnd.bgcolor("black")
+    with Graphics() as g:
+
+        t = ClientSideNetTurtle()
+        t.initializeTurtle()
+
+        oc = Graphics().ObserverCollection
+        oc.get(GraphicsCommands.LEFT).subscribe(lambda: t.turn_left())
+        oc.get(GraphicsCommands.RIGHT).subscribe(lambda: t.turn_right())
+        oc.get(GraphicsCommands.ESCAPE).subscribe(lambda: exit_loop())
+        oc.get(GraphicsCommands.FORWARD).subscribe(lambda: t.move_forward())
+
+        _empty_movement_thread = threading.Thread(target=t.empty_movement_loop)
+        _empty_movement_thread.start()
+
+        game_thread = Thread(target=game_loop)
+        game_thread.start()
+
+        # Start the netturtle's event loop
+        mainloop()
+
+        game_thread.join()
+
+        print("Done")
+        print("Close the window to exit.")
+
+        quit()
 
     # speed()
     # penup()
@@ -58,25 +80,4 @@ if __name__ == "__main__":
     # right(90)
     # forward(300)
 
-    wnd.onkey(t.turn_left, "q")
-    wnd.onkey(t.turn_right, "e")
-    wnd.onkey(t.turn_left, "Left")
-    wnd.onkey(t.turn_right, "Right")
-    wnd.onkey(exit_loop, "Escape")
 
-    wnd.listen()
-
-    t.updateWindowSize()
-
-    game_thread = Thread(target=game_loop)
-    game_thread.start()
-
-    # Start the netturtle's event loop
-    mainloop()
-
-    game_thread.join()
-
-    print("Done")
-    print("Close the window to exit.")
-
-    quit()

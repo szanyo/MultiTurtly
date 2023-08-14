@@ -16,15 +16,11 @@ class ClientSideNetTurtle(AbstractNetTurtle):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._empty_movement_thread = None
-        self._wnd = kwargs.get("wnd", None)
+        self._wnd = None
         self._turtle_instance = None
         self._turtle_color = kwargs.get(TurtlyDataKeys.PLAYER_COLOR.value,
                                         (randint(0, 255), randint(0, 255), randint(0, 255)))
         self.movement_queue = Queue()
-
-    def testing(self):
-        self._empty_movement_thread = threading.Thread(target=self._empty_movement_queue)
-        self._empty_movement_thread.start()
 
     def initializeTurtle(self):
         self._wnd = Graphics().Window
@@ -33,12 +29,19 @@ class ClientSideNetTurtle(AbstractNetTurtle):
         self._turtle_instance.color(self._turtle_color)
         self._turtle_instance.shape("turtle")
         self._turtle_instance.shapesize(stretch_wid=1.5)
-        self._turtle_instance.goto(0, 0)
+        self._turtle_instance.penup()
+        self._turtle_instance.goto(Graphics().GUI.getElement("LBOX").x,
+                                   Graphics().GUI.getElement("LBOX").y)
         self._turtle_instance.pendown()
 
         self.updateWindowSize()
 
-    def _empty_movement_queue(self):
+    def empty_movement_loop(self):
+        while True:
+            self.empty_movement_queue()
+            time.sleep(0.1)
+
+    def empty_movement_queue(self):
         while not self.movement_queue.empty():
             self.movement_queue.get()()
 

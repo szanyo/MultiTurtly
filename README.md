@@ -76,7 +76,7 @@ Project is: _in development_
 * [Turtle](https://docs.python.org/3/library/turtle.html)
 * [Socket](https://docs.python.org/3/library/socket.html)
 * [Threading](https://docs.python.org/3/library/threading.html)
-* Pyconio (by Zoltán Czirkos)
+* Pyconio (by Zoltán Czirkos - MIT License)
 * [Colorama](https://pypi.org/project/colorama/)
 
 ## Contact
