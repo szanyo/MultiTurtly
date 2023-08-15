@@ -56,16 +56,13 @@ class ClientSideGameRoom(AbstractGameRoom, Thread):
 
     def _readyToPlay(self, *args, **kwargs):
         self._players[kwargs.get(TurtlyDataKeys.PLAYER_UUID.value, None)].set_ready()
-        self._event_handler.fire_all()
+        self._event_handler.fire(ClientSideGameRoomEvents.UPDATE)
         print("-> Set ready to play")
 
     def _startGame(self, *args, **kwargs):
         self.lock()
-        Graphics().clear()
-        Graphics().initialize()
-        for player in self._players.values():
-            player.initializeTurtle()
-        self._event_handler.fire_all()
+        Graphics().update_gui()
+        self._event_handler.fire(ClientSideGameRoomEvents.UPDATE)
         print("-> Game started")
 
     def _identification(self, *args, **kwargs):
@@ -90,7 +87,7 @@ class ClientSideGameRoom(AbstractGameRoom, Thread):
 
             self._synced = True
 
-            self._event_handler.fire_all()
+            self._event_handler.fire(ClientSideGameRoomEvents.UPDATE)
             print("-> Synced")
         else:
             print("-> Sync failed")
@@ -132,6 +129,10 @@ class ClientSideGameRoom(AbstractGameRoom, Thread):
     def _escape(self, *args, **kwargs):
         print("-> Escape not implemented yet")
 
+    def _redraw(self):
+        for player in self._players.values():
+            player.updateTurtle()
+
     @property
     def Connection(self):
         return self._connection
@@ -163,4 +164,3 @@ class ClientSideGameRoom(AbstractGameRoom, Thread):
                     IndentedOutput.print(f"UUID: \t{player.UUID}")
                     IndentedOutput.print(f"Ready: \t{player.Ready}")
                     IndentedOutput.print("")
-                    # IndentedOutput.print(f"(dict_id: \t{uuid})")

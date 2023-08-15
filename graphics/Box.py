@@ -1,4 +1,4 @@
-from turtle import speed, hideturtle, color, up, goto, down, fd, circle, update, tracer
+from turtle import speed, hideturtle, color, up, goto, down, fd, circle, update, tracer, isvisible, showturtle, Turtle
 
 
 class Box:
@@ -10,22 +10,22 @@ class Box:
         self.radius = radius
         self.paintcolor = paintcolor
 
-    def paint(self, ):
-        memento_speed = speed()
-
-        speed(0)
-        hideturtle()
-        color(self.paintcolor)
+    def paint(self):
+        temp_turtle = Turtle()
+        temp_turtle.speed(0)
+        temp_turtle.hideturtle()
+        temp_turtle.color(self.paintcolor)
         tracer(0, 0)
-        up()
-        goto(self.x - self.width / 2 + self.radius,
-             self.y - self.height / 2)
-        down()
+        temp_turtle.up()
+        temp_turtle.goto(self.x - self.width / 2 + self.radius,
+                         self.y - self.height / 2)
+        temp_turtle.down()
         for _ in range(2):
-            fd(self.width - 2 * self.radius)
-            circle(self.radius, 90)
-            fd(self.height - 2 * self.radius)
-            circle(self.radius, 90)
-
-        update()
-        speed(memento_speed)
+            temp_turtle.fd(self.width - 2 * self.radius)
+            temp_turtle.circle(self.radius, 90)
+            temp_turtle.fd(self.height - 2 * self.radius)
+            temp_turtle.circle(self.radius, 90)
+        try:
+            update()
+        except:
+            pass

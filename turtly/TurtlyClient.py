@@ -234,6 +234,7 @@ class TurtlyClient(Thread):
         oc.get(GraphicsCommands.FORWARD).subscribe(self._forward)
         oc.get(GraphicsCommands.ESCAPE).subscribe(self._escape)
         oc.get(GraphicsCommands.PAUSE).subscribe(self._pause)
+        oc.get(GraphicsCommands.UPDATE_ALL).subscribe(self._update_all_graphics)
 
     def stop_listening_graphic_events(self):
         print("-> Stop listening graphic events")
@@ -273,6 +274,10 @@ class TurtlyClient(Thread):
         self._tcp_client.send(
             Hermes(TurtlyGameRoomCommands.PAUSE,
                    **{TurtlyDataKeys.PLAYER_UUID.value: self._player.UUID}))
+
+    def _update_all_graphics(self):
+        print("-> Update all")
+        self._room._update_all_graphics()
 
     # Program methods
 

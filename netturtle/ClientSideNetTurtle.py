@@ -6,7 +6,7 @@ from random import randint
 from turtle import Turtle
 
 from definitions.TurtlyDataKeys import TurtlyDataKeys
-from graphics.Graphics import Graphics
+from graphics.Graphics import Graphics, GraphicsCommands
 from netturtle.AbstractNetTurtle import AbstractNetTurtle
 
 DEFAULT_COLOR_TUPLE = (125, 125, 125)
@@ -22,7 +22,7 @@ class ClientSideNetTurtle(AbstractNetTurtle):
                                         (randint(0, 255), randint(0, 255), randint(0, 255)))
         self.movement_queue = Queue()
 
-    def initializeTurtle(self):
+    def updateTurtle(self):
         self._wnd = Graphics().Window
         self._turtle_instance = Turtle()
         self._turtle_instance.speed(0)
@@ -55,19 +55,24 @@ class ClientSideNetTurtle(AbstractNetTurtle):
         self.movement_queue.put(lambda: self._forward())
 
     def _left(self):
+        print("left")
+        self._turtle_instance.pendown()
         angle = 45
         self._direction += angle
         self._direction %= 360
         self._turtle_instance.left(angle)
 
     def _right(self):
+        print("right")
+        self._turtle_instance.pendown()
         angle = 45
         self._direction -= angle
         self._direction %= 360
         self._turtle_instance.right(angle)
 
     def _forward(self):
-        # print(self._unit)
+        print(f"forward: {self._unit}")
+        self._turtle_instance.pendown()
         future_moving_unit = self._unit if (self._direction % 90 == 0) else self._unit * pow(2, 0.5)
         future_x = self._turtle_instance.xcor() + future_moving_unit * cos(radians(self._direction))
         future_y = self._turtle_instance.ycor() + future_moving_unit * sin(radians(self._direction))

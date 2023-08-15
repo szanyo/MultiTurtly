@@ -1,4 +1,5 @@
 import threading
+import turtle
 from threading import Thread
 from time import sleep
 from turtle import Screen, mainloop
@@ -30,19 +31,22 @@ if __name__ == "__main__":
     with Graphics() as g:
 
         t = ClientSideNetTurtle()
-        t.initializeTurtle()
-
-        oc = Graphics().ObserverCollection
-        oc.get(GraphicsCommands.LEFT).subscribe(lambda: t.turn_left())
-        oc.get(GraphicsCommands.RIGHT).subscribe(lambda: t.turn_right())
-        oc.get(GraphicsCommands.ESCAPE).subscribe(lambda: exit_loop())
-        oc.get(GraphicsCommands.FORWARD).subscribe(lambda: t.move_forward())
-
-        _empty_movement_thread = threading.Thread(target=t.empty_movement_loop)
-        _empty_movement_thread.start()
+        t.updateTurtle()
+        #
+        # oc = Graphics().ObserverCollection
+        # oc.get(GraphicsCommands.LEFT).subscribe(t.turn_left)
+        # oc.get(GraphicsCommands.RIGHT).subscribe(t.turn_right)
+        # oc.get(GraphicsCommands.ESCAPE).subscribe(exit_loop)
+        # oc.get(GraphicsCommands.FORWARD).subscribe(t.move_forward)
+        # oc.get(GraphicsCommands.UPDATE_ALL).subscribe(t.updateTurtle)
+        #
+        # _empty_movement_thread = threading.Thread(target=t.empty_movement_loop)
+        # _empty_movement_thread.start()
 
         game_thread = Thread(target=game_loop)
         game_thread.start()
+
+        turtle.forward(100)
 
         # Start the netturtle's event loop
         mainloop()

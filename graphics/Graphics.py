@@ -1,3 +1,4 @@
+import asyncio
 import threading
 from enum import auto
 from time import sleep, time
@@ -40,15 +41,12 @@ class Graphics:
         self._gui = GUI(self)
         self._gui.paint()
 
-        self._observer_collection.get(GraphicsCommands.UPDATE_ALL).subscribe(self._update_gui)
-
         self._onScreenResizeListenerThread = threading.Thread(target=self._onScreenResizeListener)
         self._onScreenResizeListenerThread.start()
 
     def initialize(self):
         self._wnd = Screen()
         self._wnd.colormode(255)
-        # self._wnd.setup(800, 600)
         self._wnd.title("MultiTurtly")
         self._wnd.bgcolor("black")
 
@@ -67,7 +65,7 @@ class Graphics:
         self._wnd.onkey(lambda: self._observer_collection.fire(GraphicsCommands.ESCAPE), "Escape")
         self._wnd.onkey(lambda: self._observer_collection.fire(GraphicsCommands.PAUSE), "p")
 
-        self._wnd.onkey(lambda: self._observer_collection.fire(GraphicsCommands.UPDATE_ALL), "r")
+        self._wnd.onkey(lambda: self.update_gui(), "r")
 
         self._wnd.listen()
 
@@ -81,23 +79,34 @@ class Graphics:
 
         self._observer_collection.add(GraphicsCommands.UPDATE_ALL, "update_all")
 
-    def _update_gui(self):
+    def update_gui(self):
         self.clear()
         self.initialize()
         self._gui.update()
         self._gui.paint()
+        self._observer_collection.fire(GraphicsCommands.UPDATE_ALL)
 
     def _onScreenResizeListener(self):
-        self._old_width = self._wnd.window_width()
-        self._old_height = self._wnd.window_height()
+        sleep(1)
+        self._old_width, self._old_height = self._window_size()
         while self._active:
-            if self._old_width != self._wnd.window_width() or self._old_height != self._wnd.window_height():
-                while self._old_width != self._wnd.window_width() or self._old_height != self._wnd.window_height():
-                    self._old_width = self._wnd.window_width()
-                    self._old_height = self._wnd.window_height()
+            new_width, new_height = self._window_size()
+            if self._old_width != new_width or self._old_height != new_height:
+                print(
+                    f"Resizing... {self._old_width}x{self._old_height} -> {self._wnd.window_width()}x{self._wnd.window_height()}")
+                new_width, new_height = self._window_size()
+                while self._old_width != new_width or self._old_height != new_height:
+                    self._old_width, self._old_height = new_width, new_height
+                    new_width, new_height = self._window_size()
                     sleep(0.25)
-                self._observer_collection.fire(GraphicsCommands.UPDATE_ALL)
+                self.update_gui()
             sleep(0.25)
+
+    def _window_size(self):
+        try:
+            return self._wnd.window_width(), self._wnd.window_height()
+        except:
+            return 0, 0
 
     def __enter__(self):
         return self
