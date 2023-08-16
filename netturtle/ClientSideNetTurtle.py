@@ -20,6 +20,8 @@ class ClientSideNetTurtle(AbstractNetTurtle):
         self._turtle_instance = Turtle()
         self._turtle_color = kwargs.get(TurtlyDataKeys.PLAYER_COLOR.value,
                                         (randint(0, 255), randint(0, 255), randint(0, 255)))
+        self._turtle_initial_position = kwargs.get(TurtlyDataKeys.PLAYER_INITIAL_POSITION.value, (0, 0))
+        self._turtle_initial_direction = kwargs.get(TurtlyDataKeys.PLAYER_INITIAL_DIRECTION.value, 0)
         self.movement_queue = Queue()
         self.history = History()
 
@@ -33,6 +35,7 @@ class ClientSideNetTurtle(AbstractNetTurtle):
         self._turtle_instance.showturtle()
         x, y = Graphics().GUI.getElement("LBOX").x, Graphics().GUI.getElement("LBOX").y
         self._turtle_instance.goto(x, y)
+        self._turtle_instance.setheading(90)
         self._turtle_instance.down()
 
         self.updateWindowSize()

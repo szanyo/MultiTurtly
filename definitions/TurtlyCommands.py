@@ -23,6 +23,7 @@ class TurtlyServerCommands(TurtlyCommands, Enum):
 class TurtlyGameRoomCommands(TurtlyCommands, Enum):
     READY_TO_PLAY = auto()
     START_GAME = auto()
+    INITIALIZATION = auto()
     IDENTIFICATION = auto()
     SYNC = auto()
     TURN_LEFT = auto()
