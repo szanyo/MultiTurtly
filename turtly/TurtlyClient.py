@@ -244,6 +244,7 @@ class TurtlyClient(Thread):
         oc.get(GraphicsCommands.FORWARD).unsubscribe(self._forward)
         oc.get(GraphicsCommands.ESCAPE).unsubscribe(self._escape)
         oc.get(GraphicsCommands.PAUSE).unsubscribe(self._pause)
+        oc.get(GraphicsCommands.UPDATE_ALL).unsubscribe(self._update_all_graphics)
 
     def _left(self):
         print("-> Left")
@@ -277,7 +278,7 @@ class TurtlyClient(Thread):
 
     def _update_all_graphics(self):
         print("-> Update all")
-        self._room._update_all_graphics()
+        self._room.redraw()
 
     # Program methods
 

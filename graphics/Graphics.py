@@ -1,9 +1,7 @@
-import asyncio
 import threading
 from enum import auto
-from time import sleep, time
-from turtle import Screen, done, speed, isvisible, hideturtle, up, goto, down, isdown, showturtle, pendown, penup, fd, \
-    circle, color
+from time import sleep
+from turtle import Screen, done
 
 from equipments.patterns.Observing import ObserverCollection
 from graphics.GUI import GUI
@@ -21,22 +19,34 @@ class GraphicsCommands:
 
 
 class Graphics:
+    """
+    Singleton class that handles the graphics of the game.
+
+    Some advanced approaches for the future:
+    https://stackoverflow.com/questions/12305142/issue-with-singleton-python-call-two-times-init
+    """
+
     _graphics = None
 
     def __new__(cls, *args, **kwargs):
         if cls._graphics is None:
             cls._graphics = super().__new__(cls, *args, **kwargs)
+            cls._graphics.__initialized = False
         return cls._graphics
 
     def __init__(self, *args, **kwargs):
+        if self.__initialized:
+            return
+        self.__initialized = True
         self._active = True
         self._old_width = 0
         self._old_height = 0
 
-        self._wnd = None
+        self._wnd = Screen()
         self._observer_collection = ObserverCollection()
         self._initEvents()
         self.initialize()
+        self._wnd.setup(800, 600)
 
         self._gui = GUI(self)
         self._gui.paint()

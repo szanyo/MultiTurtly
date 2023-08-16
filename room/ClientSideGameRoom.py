@@ -62,6 +62,7 @@ class ClientSideGameRoom(AbstractGameRoom, Thread):
     def _startGame(self, *args, **kwargs):
         self.lock()
         Graphics().update_gui()
+        self.redraw()
         self._event_handler.fire(ClientSideGameRoomEvents.UPDATE)
         print("-> Game started")
 
@@ -129,7 +130,7 @@ class ClientSideGameRoom(AbstractGameRoom, Thread):
     def _escape(self, *args, **kwargs):
         print("-> Escape not implemented yet")
 
-    def _redraw(self):
+    def redraw(self):
         for player in self._players.values():
             player.updateTurtle()
 

@@ -1,4 +1,3 @@
-import threading
 import time
 from math import radians, cos, sin
 from queue import Queue
@@ -17,22 +16,22 @@ class ClientSideNetTurtle(AbstractNetTurtle):
         super().__init__(*args, **kwargs)
         self._empty_movement_thread = None
         self._wnd = None
-        self._turtle_instance = None
+        self._turtle_instance = Turtle()
         self._turtle_color = kwargs.get(TurtlyDataKeys.PLAYER_COLOR.value,
                                         (randint(0, 255), randint(0, 255), randint(0, 255)))
         self.movement_queue = Queue()
 
     def updateTurtle(self):
-        self._wnd = Graphics().Window
         self._turtle_instance = Turtle()
+        self._turtle_instance.showturtle()
         self._turtle_instance.speed(0)
         self._turtle_instance.color(self._turtle_color)
         self._turtle_instance.shape("turtle")
         self._turtle_instance.shapesize(stretch_wid=1.5)
-        self._turtle_instance.penup()
-        self._turtle_instance.goto(Graphics().GUI.getElement("LBOX").x,
-                                   Graphics().GUI.getElement("LBOX").y)
-        self._turtle_instance.pendown()
+        self._turtle_instance.up()
+        x, y = Graphics().GUI.getElement("LBOX").x, Graphics().GUI.getElement("LBOX").y
+        self._turtle_instance.goto(x, y)
+        self._turtle_instance.down()
 
         self.updateWindowSize()
 
@@ -77,18 +76,12 @@ class ClientSideNetTurtle(AbstractNetTurtle):
         future_x = self._turtle_instance.xcor() + future_moving_unit * cos(radians(self._direction))
         future_y = self._turtle_instance.ycor() + future_moving_unit * sin(radians(self._direction))
 
-        # print(f"direction: {self._direction}")
-        # print(f"future_moving_unit: {future_moving_unit}")
-        # print(f"future_x: {future_x} half_width: {self._half_width}")
-        # print(f"future_y: {future_y} half_height: {self._half_height}")
-
         if self._half_width > future_x > -self._half_width and self._half_height > future_y > -self._half_height:
             self._turtle_instance.forward(future_moving_unit)
 
-        # print(f"current_x: {self._t.xcor()}")
-        # print(f"current_y: {self._t.ycor()}")
-
     def updateWindowSize(self):
+        self._wnd = Graphics().Window
+
         self._half_width = self._wnd.window_width() / 2
         self._half_height = self._wnd.window_height() / 2
 
