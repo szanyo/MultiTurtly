@@ -10,22 +10,21 @@ class Box:
         self.radius = radius
         self.paintcolor = paintcolor
 
+        self._turtle = Turtle()
+
     def paint(self):
-        temp_turtle = Turtle()
-        temp_turtle.speed(0)
-        temp_turtle.hideturtle()
-        temp_turtle.color(self.paintcolor)
-        tracer(0, 0)
-        temp_turtle.up()
-        temp_turtle.goto(self.x - self.width / 2 + self.radius,
+        self._turtle = Turtle()
+        self._turtle.speed(0)
+        self._turtle.hideturtle()
+        self._turtle.color(self.paintcolor)
+        tracer(False)
+        self._turtle.up()
+        self._turtle.goto(self.x - self.width / 2 + self.radius,
                          self.y - self.height / 2)
-        temp_turtle.down()
+        self._turtle.down()
         for _ in range(2):
-            temp_turtle.fd(self.width - 2 * self.radius)
-            temp_turtle.circle(self.radius, 90)
-            temp_turtle.fd(self.height - 2 * self.radius)
-            temp_turtle.circle(self.radius, 90)
-        try:
-            update()
-        except:
-            pass
+            self._turtle.fd(self.width - 2 * self.radius)
+            self._turtle.circle(self.radius, 90)
+            self._turtle.fd(self.height - 2 * self.radius)
+            self._turtle.circle(self.radius, 90)
+        tracer(True)

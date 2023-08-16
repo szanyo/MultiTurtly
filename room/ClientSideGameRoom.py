@@ -133,6 +133,7 @@ class ClientSideGameRoom(AbstractGameRoom, Thread):
     def redraw(self):
         for player in self._players.values():
             player.updateTurtle()
+            player.redrawHistory()
 
     @property
     def Connection(self):

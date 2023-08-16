@@ -43,10 +43,10 @@ class Graphics:
         self._old_height = 0
 
         self._wnd = Screen()
+        self._wnd.setup(800, 600)
         self._observer_collection = ObserverCollection()
         self._initEvents()
         self.initialize()
-        self._wnd.setup(800, 600)
 
         self._gui = GUI(self)
         self._gui.paint()
@@ -55,7 +55,6 @@ class Graphics:
         self._onScreenResizeListenerThread.start()
 
     def initialize(self):
-        self._wnd = Screen()
         self._wnd.colormode(255)
         self._wnd.title("MultiTurtly")
         self._wnd.bgcolor("black")
@@ -115,7 +114,8 @@ class Graphics:
     def _window_size(self):
         try:
             return self._wnd.window_width(), self._wnd.window_height()
-        except:
+        except Exception as e:
+            print(e)
             return 0, 0
 
     def __enter__(self):
@@ -129,7 +129,7 @@ class Graphics:
 
     def clear(self):
         if self._wnd is not None:
-            self._wnd.clear()
+            self._wnd.clearscreen()
 
     @property
     def Window(self):
