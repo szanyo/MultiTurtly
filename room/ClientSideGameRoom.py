@@ -61,8 +61,7 @@ class ClientSideGameRoom(AbstractGameRoom, Thread):
 
     def _startGame(self, *args, **kwargs):
         self.lock()
-        Graphics().update_gui()
-        self.redraw()
+        Graphics().ObserverCollection.fire(GraphicsCommands.UPDATE_ALL)
         self._event_handler.fire(ClientSideGameRoomEvents.UPDATE)
         print("-> Game started")
 

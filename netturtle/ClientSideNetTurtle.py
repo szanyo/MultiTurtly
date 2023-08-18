@@ -16,6 +16,11 @@ DEFAULT_COLOR_TUPLE = (125, 125, 125)
 class ClientSideNetTurtle(AbstractNetTurtle):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self._boundary_x = 0
+        self._boundary_neg_x = 0
+        self._boundary_y = 0
+        self._boundary_neg_y = 0
+
         self._empty_movement_thread = None
         self._map = Box()
         self._turtle_instance = Turtle()
@@ -23,7 +28,8 @@ class ClientSideNetTurtle(AbstractNetTurtle):
                                         (randint(0, 255), randint(0, 255), randint(0, 255)))
         self._turtle_initial_position = kwargs.get(TurtlyDataKeys.PLAYER_INITIAL_POSITION.value,
                                                    (randint(0, 2), randint(0, 2)))
-        self._turtle_initial_direction = kwargs.get(TurtlyDataKeys.PLAYER_INITIAL_DIRECTION.value, 0)
+        self._turtle_initial_direction = kwargs.get(TurtlyDataKeys.PLAYER_INITIAL_DIRECTION.value, 90)
+        self._direction = self._turtle_initial_direction
         self.movement_queue = Queue()
         self.history = History()
 
@@ -37,8 +43,9 @@ class ClientSideNetTurtle(AbstractNetTurtle):
         self._turtle_instance.shapesize(stretch_wid=1.5)
         self._turtle_instance.up()
         self._turtle_instance.showturtle()
+        self._turtle_instance.setheading(self._turtle_initial_direction)
+        self._direction = self._turtle_initial_direction
         self._turtle_instance.goto(self._map.x, self._map.y)
-        self._turtle_instance.setheading(90)
         self._turtle_instance.down()
 
         self.redrawHistory()
@@ -51,8 +58,8 @@ class ClientSideNetTurtle(AbstractNetTurtle):
     def empty_movement_queue(self):
         while not self.movement_queue.empty():
             movement = self.movement_queue.get()
-            movement()
-            self.history.add(movement)
+            if movement():
+                self.history.add(movement)
 
     def redrawHistory(self):
         history = self.history.get()
@@ -77,6 +84,7 @@ class ClientSideNetTurtle(AbstractNetTurtle):
         self._direction += angle
         self._direction %= 360
         self._turtle_instance.left(angle)
+        return True
 
     def _right(self):
         print("right")
@@ -85,29 +93,28 @@ class ClientSideNetTurtle(AbstractNetTurtle):
         self._direction -= angle
         self._direction %= 360
         self._turtle_instance.right(angle)
+        return True
 
     def _forward(self):
         print(f"forward: {self._unit}")
         self._turtle_instance.pendown()
         future_moving_unit = self._unit if (self._direction % 90 == 0) else self._unit * pow(2, 0.5)
 
-        # TODO? WRONG
-        future_x = self._turtle_instance.xcor() + future_moving_unit * cos(radians(self._direction))
-        future_y = self._turtle_instance.ycor() + future_moving_unit * sin(radians(self._direction))
+        future_x = round(self._turtle_instance.xcor() + future_moving_unit * cos(radians(self._direction)), 2)
+        future_y = round(self._turtle_instance.ycor() + future_moving_unit * sin(radians(self._direction)), 2)
 
-        boundary_x = self._map.x + 2 * self._unit
-        boundary_neg_x = self._map.x - 2 * self._unit
-        boundary_y = self._map.y + 2 * self._unit
-        boundary_neg_y = self._map.y - 2 * self._unit
+        # print(f"boundaries: {self._boundary_neg_x}, {self._boundary_x}, {self._boundary_neg_y}, {self._boundary_y}")
+        # print(f"direction: {self._direction}")
+        # print(f"heading: {self._turtle_instance.heading()}")
+        # print(f"future position: {future_x}, {future_y}")
 
-        print(f"boundaries: {boundary_neg_x}, {boundary_x}, {boundary_neg_y}, {boundary_y}")
-        print(f"future position: {future_x}, {future_y}")
-
-        if boundary_neg_x < future_x < boundary_x and boundary_neg_y < future_y < boundary_y:
+        if self._boundary_neg_x <= future_x <= self._boundary_x and self._boundary_neg_y <= future_y <= self._boundary_y:
             self._turtle_instance.forward(future_moving_unit)
-            print(f"new position: {self._turtle_instance.position()}")
+            # print(f"new position: {self._turtle_instance.position()}")
+            return True
         else:
-            print("Out of bounds")
+            print("Warning: Try to move out of the map!")
+            return False
 
     def updateWindowSize(self):
         self._map = Graphics().GUI.getElement("LBOX")
@@ -119,3 +126,8 @@ class ClientSideNetTurtle(AbstractNetTurtle):
         unit_height = self._half_height / 2
 
         self._unit = unit_width if unit_width < unit_height else unit_height
+
+        self._boundary_x = round(self._map.x + 2 * self._unit, 2)
+        self._boundary_neg_x = round(self._map.x - 2 * self._unit, 2)
+        self._boundary_y = round(self._map.y + 2 * self._unit, 2)
+        self._boundary_neg_y = round(self._map.y - 2 * self._unit, 2)
