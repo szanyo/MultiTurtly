@@ -9,16 +9,17 @@ from netturtle.ClientSideNetTurtle import ClientSideNetTurtle
 score = 0
 exit = False
 
-def game_loop():
+def game_loop(turtle):
     global score, exit
 
     while not exit:
+        turtle.move_forward()
         score += 1
         print(score)
         if score == 100:
             exit = True
             break
-        sleep(2)
+        sleep(1 - score / 100)
 
 
 def exit_loop():
@@ -42,7 +43,7 @@ if __name__ == "__main__":
         _empty_movement_thread = threading.Thread(target=t.empty_movement_loop)
         _empty_movement_thread.start()
 
-        game_thread = Thread(target=game_loop)
+        game_thread = Thread(target=game_loop, args=(t,))
         game_thread.start()
 
         # Start the netturtle's event loop

@@ -1,3 +1,6 @@
+import threading
+from time import sleep
+
 from definitions.TurtlyCommands import TurtlyClientCommands, TurtlyCommandsType, TurtlyGameRoomCommands
 from definitions.TurtlyDataKeys import TurtlyDataKeys
 from room.AbstractGameRoom import AbstractGameRoom
@@ -8,6 +11,18 @@ class ServerSideGameRoom(AbstractGameRoom):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+    def _game_loop(self):
+        print("-> Serverside game loop")
+        while self._started:
+            for player in self._players.values():
+                self._move_forward(**{TurtlyDataKeys.PLAYER_UUID.value: player.UUID})
+            sleep(1)
+
+    def _init_game(self):
+        for player in self._players.values():
+            player.initialize_turtle(**{TurtlyDataKeys.PLAYER_UUID.value: player.UUID})
+
 
     def _send_to_all_players(self, command, type, **kwargs):
         for player in self._players.values():
@@ -34,12 +49,18 @@ class ServerSideGameRoom(AbstractGameRoom):
     def _startGame(self, *args, **kwargs):
         print("-> Start game", args, kwargs)
         self.lock()
+
+        print("-> Initialize game", args, kwargs)
+        self._init_game()
+
         print("-> Room locked", args, kwargs)
         self.started()
         print("-> Room started", args, kwargs)
         self._send_to_all_players(TurtlyGameRoomCommands.START_GAME,
                                   TurtlyCommandsType.RESPONSE,
                                   **kwargs)
+        print("-> Start game loop")
+        threading.Thread(target=self._game_loop).start()
 
     def _identification(self, *args, **kwargs):
         pass

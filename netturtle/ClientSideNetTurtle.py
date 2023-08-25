@@ -20,6 +20,7 @@ class ClientSideNetTurtle(AbstractNetTurtle):
         self._boundary_neg_x = 0
         self._boundary_y = 0
         self._boundary_neg_y = 0
+        self._stretch_wid = 1.5
 
         self._empty_movement_thread = None
         self._map = Box()
@@ -40,7 +41,7 @@ class ClientSideNetTurtle(AbstractNetTurtle):
         self._turtle_instance.speed(0)
         self._turtle_instance.color(self._turtle_color)
         self._turtle_instance.shape("turtle")
-        self._turtle_instance.shapesize(stretch_wid=1.5)
+        self._turtle_instance.shapesize(stretch_wid=self._stretch_wid)
         self._turtle_instance.up()
         self._turtle_instance.showturtle()
         self._turtle_instance.setheading(self._turtle_initial_direction)
@@ -131,3 +132,7 @@ class ClientSideNetTurtle(AbstractNetTurtle):
         self._boundary_neg_x = round(self._map.x - 2 * self._unit, 2)
         self._boundary_y = round(self._map.y + 2 * self._unit, 2)
         self._boundary_neg_y = round(self._map.y - 2 * self._unit, 2)
+
+        self._stretch_wid = self._unit / 75
+        if self._stretch_wid < 1.5:
+            self._stretch_wid = 1.5

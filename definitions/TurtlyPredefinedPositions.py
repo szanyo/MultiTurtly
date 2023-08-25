@@ -1,0 +1,12 @@
+TurtlyPredefinedPositions = {"LEFTUP":(-2,-2),
+                             "RIGHTDOWN":(2,2),
+                             "LEFTMIDDLEDOWN":(-1,-1),
+                             "RIGHTMIDDLEUP":(1,-1),
+                             "RIGHTUP":(2,-2),
+                             "LEFTDOWN":(-2,2),
+                             "LEFTMIDDLEUP":(-1,1),
+                             "RIGHTMIDDLEDOWN":(1,1),
+                             "UPCENTER":(0,-2),
+                             "DOWNCENTER":(0,2),
+                             "LEFTCENTER":(-2,0),
+                             "RIGHTCENTER":(2,0)}

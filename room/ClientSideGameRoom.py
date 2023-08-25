@@ -47,8 +47,9 @@ class ClientSideGameRoom(AbstractGameRoom, Thread):
         if not self._closed:
             print("Connection closed - something went wrong or server closed connection")
 
-    def gameLoop(self):
-        print("-> Game loop")
+    def command_consumer_service(self):
+        print("-> Game command consumer service started")
+        Graphics().ObserverCollection.fire(GraphicsCommands.UPDATE_ALL)
         while self._started:
             for player in self._players.values():
                 player.empty_movement_queue()
@@ -61,7 +62,6 @@ class ClientSideGameRoom(AbstractGameRoom, Thread):
 
     def _startGame(self, *args, **kwargs):
         self.lock()
-        Graphics().ObserverCollection.fire(GraphicsCommands.UPDATE_ALL)
         self._event_handler.fire(ClientSideGameRoomEvents.UPDATE)
         print("-> Game started")
 

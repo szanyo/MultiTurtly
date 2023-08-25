@@ -133,7 +133,7 @@ class Console:
         self._tc.start_listening_graphic_events()
         
         # Start game loop
-        self._tc.Room.gameLoop()
+        self._tc.Room.command_consumer_service()
         
         self._tc.stop_listening_graphic_events()
 
