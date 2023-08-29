@@ -1,8 +1,10 @@
 import threading
 from time import sleep
 
+from definitions import TurtlyPredefinedDirections
 from definitions.TurtlyCommands import TurtlyClientCommands, TurtlyCommandsType, TurtlyGameRoomCommands
 from definitions.TurtlyDataKeys import TurtlyDataKeys
+from definitions.TurtlyPredefinedPositions import TurtlyPredefinedPositions
 from room.AbstractGameRoom import AbstractGameRoom
 from turtly.Hermes import Hermes
 
@@ -20,9 +22,12 @@ class ServerSideGameRoom(AbstractGameRoom):
             sleep(1)
 
     def _init_game(self):
+        counter = 0
+        prepositions = list(TurtlyPredefinedPositions.items())
+        predirections = TurtlyPredefinedDirections.TurtlyPredifinedDirections
         for player in self._players.values():
-            player.initialize_turtle(**{TurtlyDataKeys.PLAYER_UUID.value: player.UUID})
-
+            player.initialize_turtle(**{TurtlyDataKeys.PLAYER_INITIAL_POSITION.value: prepositions[counter],
+                                        TurtlyDataKeys.PLAYER_INITIAL_DIRECTION.value: predirections[counter]})
 
     def _send_to_all_players(self, command, type, **kwargs):
         for player in self._players.values():
@@ -48,14 +53,16 @@ class ServerSideGameRoom(AbstractGameRoom):
 
     def _startGame(self, *args, **kwargs):
         print("-> Start game", args, kwargs)
+
         self.lock()
-
-        print("-> Initialize game", args, kwargs)
-        self._init_game()
-
         print("-> Room locked", args, kwargs)
+
+        self._init_game()
+        print("-> Game initialized", args, kwargs)
+
         self.started()
         print("-> Room started", args, kwargs)
+
         self._send_to_all_players(TurtlyGameRoomCommands.START_GAME,
                                   TurtlyCommandsType.RESPONSE,
                                   **kwargs)
