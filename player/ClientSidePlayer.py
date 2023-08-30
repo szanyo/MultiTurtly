@@ -14,5 +14,8 @@ class ClientSidePlayer(AbstractPlayer, ClientSideNetTurtle):
             self._uuid = representation.get(TurtlyDataKeys.PLAYER_UUID.value, self._uuid)
         self._player_name = representation.get(TurtlyDataKeys.PLAYER_NAME.value, self._player_name)
         self._isReady = representation.get(TurtlyDataKeys.PLAYER_READY.value, self._isReady)
+        self._turtle_color = representation.get(TurtlyDataKeys.PLAYER_COLOR.value, self._turtle_color)
+        self._turtle_initial_position = representation.get(TurtlyDataKeys.PLAYER_INITIAL_POSITION.value, self._turtle_initial_position)
+        self._turtle_initial_direction = representation.get(TurtlyDataKeys.PLAYER_INITIAL_DIRECTION.value, self._turtle_initial_direction)
 
 

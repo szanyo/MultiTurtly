@@ -5,6 +5,7 @@ from definitions import TurtlyPredefinedDirections
 from definitions.TurtlyCommands import TurtlyClientCommands, TurtlyCommandsType, TurtlyGameRoomCommands
 from definitions.TurtlyDataKeys import TurtlyDataKeys
 from definitions.TurtlyPredefinedPositions import TurtlyPredefinedPositions
+from equipments.multitools.Bicska import generate_distinct_colors
 from room.AbstractGameRoom import AbstractGameRoom
 from turtly.Hermes import Hermes
 
@@ -25,9 +26,12 @@ class ServerSideGameRoom(AbstractGameRoom):
         counter = 0
         prepositions = list(TurtlyPredefinedPositions.items())
         predirections = TurtlyPredefinedDirections.TurtlyPredifinedDirections
+        colors = generate_distinct_colors(len(self._players), min_lightness=0.5,max_lightness=1.0, min_saturation=0.5, max_saturation=1.0, color_offset=50)
         for player in self._players.values():
-            player.initialize_turtle(**{TurtlyDataKeys.PLAYER_INITIAL_POSITION.value: prepositions[counter],
-                                        TurtlyDataKeys.PLAYER_INITIAL_DIRECTION.value: predirections[counter]})
+            player._turtle_color = colors[counter]
+            player._turtle_initial_position = prepositions[counter]
+            player._turtle_initial_direction = predirections[counter]
+            counter += 1
 
     def _send_to_all_players(self, command, type, **kwargs):
         for player in self._players.values():

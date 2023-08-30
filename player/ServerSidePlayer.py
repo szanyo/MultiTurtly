@@ -17,6 +17,7 @@ class ServerSidePlayer(AbstractPlayer, ServerSideNetTurtle, Thread):
         self._binded = False
         self._destroyed = False
 
+
     def set_room(self, room):
         self._binded = False
         super().set_room(room)
@@ -49,5 +50,8 @@ class ServerSidePlayer(AbstractPlayer, ServerSideNetTurtle, Thread):
     def Representation(self):
         representation = {TurtlyDataKeys.PLAYER_UUID.value: self.UUID,
                           TurtlyDataKeys.PLAYER_NAME.value: self.Name,
-                          TurtlyDataKeys.PLAYER_READY.value: self._isReady}
+                          TurtlyDataKeys.PLAYER_READY.value: self._isReady,
+                          TurtlyDataKeys.PLAYER_COLOR.value: self._turtle_color,
+                          TurtlyDataKeys.PLAYER_INITIAL_POSITION.value: self._turtle_initial_position,
+                          TurtlyDataKeys.PLAYER_INITIAL_DIRECTION.value: self._turtle_initial_direction}
         return representation
