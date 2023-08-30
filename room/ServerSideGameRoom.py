@@ -29,7 +29,7 @@ class ServerSideGameRoom(AbstractGameRoom):
         colors = generate_distinct_colors(len(self._players), min_lightness=0.5,max_lightness=1.0, min_saturation=0.5, max_saturation=1.0, color_offset=50)
         for player in self._players.values():
             player._turtle_color = colors[counter]
-            player._turtle_initial_position = prepositions[counter]
+            player._turtle_initial_position = prepositions[counter][1]
             player._turtle_initial_direction = predirections[counter]
             counter += 1
 

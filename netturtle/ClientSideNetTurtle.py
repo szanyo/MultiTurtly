@@ -25,11 +25,9 @@ class ClientSideNetTurtle(AbstractNetTurtle):
         self._empty_movement_thread = None
         self._map = Box()
         self._turtle_instance = Turtle()
-        self._turtle_color = kwargs.get(TurtlyDataKeys.PLAYER_COLOR.value,
-                                        (randint(0, 255), randint(0, 255), randint(0, 255)))
-        self._turtle_initial_position = kwargs.get(TurtlyDataKeys.PLAYER_INITIAL_POSITION.value,
-                                                   (randint(0, 2), randint(0, 2)))
-        self._turtle_initial_direction = kwargs.get(TurtlyDataKeys.PLAYER_INITIAL_DIRECTION.value, 90)
+        self._turtle_color = (randint(0, 255), randint(0, 255), randint(0, 255))
+        self._turtle_initial_position = (randint(0, 2), randint(0, 2))
+        self._turtle_initial_direction = 90
         self._direction = self._turtle_initial_direction
         self.movement_queue = Queue()
         self.history = History()
@@ -46,7 +44,7 @@ class ClientSideNetTurtle(AbstractNetTurtle):
         self._turtle_instance.showturtle()
         self._turtle_instance.setheading(self._turtle_initial_direction)
         self._direction = self._turtle_initial_direction
-        self._turtle_instance.goto(self._map.x, self._map.y)
+        self._turtle_instance.goto(self._map.x + self._turtle_initial_position[0] * self._unit, self._map.y + self._turtle_initial_position[1] * self._unit)
         self._turtle_instance.down()
 
         self.redrawHistory()
