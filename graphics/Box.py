@@ -9,6 +9,7 @@ class Box:
         self._height = kwargs.get("height", 100)
         self._radius = kwargs.get("radius", 20)
         self._paintcolor = kwargs.get("paintcolor", "white")
+        self._margin = kwargs.get("margin", 20)
 
         self._turtle = Turtle()
 
@@ -60,12 +61,20 @@ class Box:
     def PaintColor(self, value):
         self._paintcolor = value
 
+    @property
+    def Margin(self):
+        return self._margin
+
+    @Margin.setter
+    def Margin(self, value):
+        self._margin = value
+
     def paint(self):
         self._turtle = Turtle()
+        tracer(False)
         self._turtle.speed(0)
         self._turtle.hideturtle()
         self._turtle.color(self._paintcolor)
-        tracer(False)
         self._turtle.up()
         self._turtle.goto(self._x - self._width / 2 + self._radius,
                           self._y - self._height / 2)
