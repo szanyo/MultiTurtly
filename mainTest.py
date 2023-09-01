@@ -55,31 +55,3 @@ if __name__ == "__main__":
         print("Close the window to exit.")
 
         quit()
-
-    # speed()
-    # penup()
-    # goto(0, wnd.window_height() / 2 - 40)
-    # color('white')
-    # msg = "Press any key to start, if you ready!"
-    # hideturtle()
-    # write(msg, align='center', font=('Arial', 24, 'normal'))
-
-    # goto(-100, 200)
-    # for step in range(15):
-    #     write(step, align='center')
-    #     right(90)
-    #     forward(10)
-    #     pendown()
-    #     forward(160)
-    #     penup()
-    #     backward(170)
-    #     left(90)
-    #     forward(20)
-    #
-    # goto(200, 250)
-    # write("FinishLine", align='center')
-    # pendown()
-    # right(90)
-    # forward(300)
-
-

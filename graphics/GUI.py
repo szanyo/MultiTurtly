@@ -16,15 +16,16 @@ class GUI:
         # GUI elements
         # Left box
         self._elements["LBOX"] = Box()
-        self._elements["LBOX"].radius = 20
-        self._elements["LBOX"].paintcolor = "white"
+        self._elements["LBOX"]._radius = 20
+        self._elements["LBOX"]._paintcolor = "white"
 
         # Right box
         self._elements["RBOX"] = Box()
-        self._elements["RBOX"].radius = 20
-        self._elements["RBOX"].paintcolor = "white"
+        self._elements["RBOX"]._radius = 20
+        self._elements["RBOX"]._paintcolor = "white"
 
         # Right box elements
+
 
         # Calculated values that depend on the constants and the window size
         self._calculate()
@@ -38,20 +39,20 @@ class GUI:
         self._elements["HEIGHT"] = self._graphics.Window.window_height()
 
         # Update Left box
-        self._elements["LBOX"].width = (self._elements["WIDTH"] - 3 * self._elements["MARGIN"]) * (2 / 3)
-        self._elements["LBOX"].height = self._elements["HEIGHT"] - 2 * self._elements["MARGIN"]
+        self._elements["LBOX"]._width = (self._elements["WIDTH"] - 3 * self._elements["MARGIN"]) * (2 / 3)
+        self._elements["LBOX"]._height = self._elements["HEIGHT"] - 2 * self._elements["MARGIN"]
 
-        self._elements["LBOX"].x = (
-                self._elements["MARGIN"] - self._elements["WIDTH"] / 2 + self._elements["LBOX"].width / 2)
-        self._elements["LBOX"].y = 0
+        self._elements["LBOX"]._x = (
+                self._elements["MARGIN"] - self._elements["WIDTH"] / 2 + self._elements["LBOX"]._width / 2)
+        self._elements["LBOX"]._y = 0
 
         # Update Right box
-        self._elements["RBOX"].width = self._elements["WIDTH"] - 3 * self._elements["MARGIN"] - self._elements["LBOX"].width
-        self._elements["RBOX"].height = self._elements["HEIGHT"] - 2 * self._elements["MARGIN"]
+        self._elements["RBOX"]._width = self._elements["WIDTH"] - 3 * self._elements["MARGIN"] - self._elements["LBOX"]._width
+        self._elements["RBOX"]._height = self._elements["HEIGHT"] - 2 * self._elements["MARGIN"]
 
-        self._elements["RBOX"].x = (
-                self._elements["WIDTH"] / 2 - self._elements["MARGIN"] - self._elements["RBOX"].width / 2)
-        self._elements["RBOX"].y = 0
+        self._elements["RBOX"]._x = (
+                self._elements["WIDTH"] / 2 - self._elements["MARGIN"] - self._elements["RBOX"]._width / 2)
+        self._elements["RBOX"]._y = 0
 
     def paint(self):
         self._elements["LBOX"].paint()

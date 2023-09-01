@@ -73,9 +73,6 @@ class ServerSideGameRoom(AbstractGameRoom):
         print("-> Start game loop")
         threading.Thread(target=self._game_loop).start()
 
-    def _identification(self, *args, **kwargs):
-        pass
-
     def _sync(self, *args, **kwargs):
         print("-> Synced", args, kwargs)
         player_representations = {}

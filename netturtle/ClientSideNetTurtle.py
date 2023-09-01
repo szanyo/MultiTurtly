@@ -44,7 +44,7 @@ class ClientSideNetTurtle(AbstractNetTurtle):
         self._turtle_instance.showturtle()
         self._turtle_instance.setheading(self._turtle_initial_direction)
         self._direction = self._turtle_initial_direction
-        self._turtle_instance.goto(self._map.x + self._turtle_initial_position[0] * self._unit, self._map.y + self._turtle_initial_position[1] * self._unit)
+        self._turtle_instance.goto(self._map.X + self._turtle_initial_position[0] * self._unit, self._map.Y + self._turtle_initial_position[1] * self._unit)
         self._turtle_instance.down()
 
         self.redrawHistory()
@@ -117,8 +117,8 @@ class ClientSideNetTurtle(AbstractNetTurtle):
 
     def updateWindowSize(self):
         self._map = Graphics().GUI.getElement("LBOX")
-        self._half_width = (self._map.width / 2) * 0.9
-        self._half_height = (self._map.height / 2) * 0.9
+        self._half_width = (self._map.Width / 2) * 0.9
+        self._half_height = (self._map.Height / 2) * 0.9
 
         unit_width = self._half_width / 2
 
@@ -126,10 +126,10 @@ class ClientSideNetTurtle(AbstractNetTurtle):
 
         self._unit = unit_width if unit_width < unit_height else unit_height
 
-        self._boundary_x = round(self._map.x + 2 * self._unit, 2)
-        self._boundary_neg_x = round(self._map.x - 2 * self._unit, 2)
-        self._boundary_y = round(self._map.y + 2 * self._unit, 2)
-        self._boundary_neg_y = round(self._map.y - 2 * self._unit, 2)
+        self._boundary_x = round(self._map.X + 2 * self._unit, 2)
+        self._boundary_neg_x = round(self._map.X - 2 * self._unit, 2)
+        self._boundary_y = round(self._map.Y + 2 * self._unit, 2)
+        self._boundary_neg_y = round(self._map.Y - 2 * self._unit, 2)
 
         self._stretch_wid = self._unit / 75
         if self._stretch_wid < 1.5:
