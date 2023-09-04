@@ -48,6 +48,9 @@ class ServerSideGameRoom(AbstractGameRoom):
                    **kwargs
                    ))
 
+    def _identification(self, *args, **kwargs):
+        pass
+
     def _readyToPlay(self, *args, **kwargs):
         print("-> Set player ready to play", args, kwargs)
         self._players[kwargs.get(TurtlyDataKeys.PLAYER_UUID.value, None)].set_ready()
