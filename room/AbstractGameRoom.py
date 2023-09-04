@@ -27,11 +27,13 @@ class AbstractGameRoom(Unique, ABC):
 
         self.generate_uuid()
 
-        self._locked = False
-        self._closed = False
-        self._started = False
-        self._paused = False
-        self._escaped = False
+        self._toggles = {"locked": False,
+                         "closed": False,
+                         "started": False,
+                         "paused": False,
+                         "escaped": False}
+
+        self._startTime = 0
 
         self._room_name: str = room_name
         self._players = {}
@@ -53,14 +55,14 @@ class AbstractGameRoom(Unique, ABC):
         self._hermes_interpreter.register_command(TurtlyGameRoomCommands.ESCAPE, self._escape)
 
     def bindPlayer(self, player):
-        if self._locked:
+        if self._toggles["locked"]:
             print("Room is locked!")
             return
         self._players[player.UUID] = player
         player.set_room(self)
 
     def unbindPlayer(self, player):
-        if self._locked:
+        if self._toggles["locked"]:
             print("Room is locked!")
             return
         if player in self._players:
@@ -76,16 +78,16 @@ class AbstractGameRoom(Unique, ABC):
             self._adminPlayer = None
 
     def lock(self):
-        self._locked = True
+        self._toggles["locked"] = True
 
     def unlock(self):
-        self._locked = False
+        self._toggles["locked"] = False
 
     def started(self):
-        self._started = True
+        self._toggles["started"] = True
 
     def finished(self):
-        self._started = False
+        self._toggles["started"] = False
 
     @abstractmethod
     def _readyToPlay(self, *args, **kwargs):
@@ -125,7 +127,7 @@ class AbstractGameRoom(Unique, ABC):
 
     @property
     def Closed(self) -> bool:
-        return self._closed
+        return self._toggles["closed"]
 
     @property
     def Name(self) -> str:

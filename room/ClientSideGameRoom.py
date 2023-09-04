@@ -31,7 +31,7 @@ class ClientSideGameRoom(AbstractGameRoom, Thread):
         self._event_handler.add(ClientSideGameRoomEvents.UPDATE)
 
     def run(self):
-        while not self._closed:
+        while not self._toggles["closed"]:
             wait = True
             if not self._connection.Queue.empty():
                 msg = self._connection.Queue.get()
@@ -44,13 +44,13 @@ class ClientSideGameRoom(AbstractGameRoom, Thread):
             if wait:
                 time.sleep(0.1)
 
-        if not self._closed:
+        if not self._toggles["closed"]:
             print("Connection closed - something went wrong or server closed connection")
 
     def command_consumer_service(self):
         print("-> Game command consumer service started")
         Graphics().ObserverCollection.fire(GraphicsCommands.UPDATE_ALL)
-        while self._started:
+        while self._toggles["started"]:
             for player in self._players.values():
                 player.empty_movement_queue()
             time.sleep(0.01)
@@ -81,9 +81,9 @@ class ClientSideGameRoom(AbstractGameRoom, Thread):
                 self._adminPlayer = self._players[
                     kwargs.get(TurtlyDataKeys.GAME_ROOM_ADMIN_UUID.value, "!!!Synchronization failure!!!")]
 
-            self._locked = kwargs.get(TurtlyDataKeys.GAME_ROOM_LOCKED.value, False)
-            self._closed = kwargs.get(TurtlyDataKeys.GAME_ROOM_CLOSED.value, False)
-            self._started = kwargs.get(TurtlyDataKeys.GAME_ROOM_STARTED.value, False)
+            self._toggles["locked"] = kwargs.get(TurtlyDataKeys.GAME_ROOM_LOCKED.value, False)
+            self._toggles["closed"] = kwargs.get(TurtlyDataKeys.GAME_ROOM_CLOSED.value, False)
+            self._toggles["started"] = kwargs.get(TurtlyDataKeys.GAME_ROOM_STARTED.value, False)
 
             self._synced = True
 
@@ -143,7 +143,7 @@ class ClientSideGameRoom(AbstractGameRoom, Thread):
 
     @property
     def Started(self):
-        return self._started
+        return self._toggles["started"]
 
     @property
     def EventHandler(self):
@@ -153,9 +153,9 @@ class ClientSideGameRoom(AbstractGameRoom, Thread):
         print(f"Room name:\t\t{self.Name}")
         print(f"Room unique id:\t{self._uuid}")
         print(f"Room admin:\t\t{self._adminPlayer.Name}")
-        print(f"Room locked:\t\t{self._locked}")
-        print(f"Room closed:\t\t{self._closed}")
-        print(f"Room started:\t\t{self._started}")
+        print(f"Room locked:\t\t{self._toggles['locked']}")
+        print(f"Room closed:\t\t{self._toggles['closed']}")
+        print(f"Room started:\t\t{self._toggles['started']}")
         print(f"Players of room:")
         with IndentedOutput():
             for uuid, player in self._players.items():

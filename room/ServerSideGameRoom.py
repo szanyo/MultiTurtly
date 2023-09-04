@@ -1,5 +1,5 @@
 import threading
-from time import sleep
+from time import sleep, time
 
 from definitions import TurtlyPredefinedDirections
 from definitions.TurtlyCommands import TurtlyClientCommands, TurtlyCommandsType, TurtlyGameRoomCommands
@@ -17,7 +17,16 @@ class ServerSideGameRoom(AbstractGameRoom):
 
     def _game_loop(self):
         print("-> Serverside game loop")
-        while self._started:
+        self._startTime = time() + 3
+
+        print(f"-> Server time: {self._startTime}")
+        print(f"-> Starting in 3 seconds")
+        while self._startTime < time():
+            sleep(0.01)
+
+        print(f"-> {time()}")
+        print("-> Let's go!")
+        while self._toggles["started"]:
             for player in self._players.values():
                 self._move_forward(**{TurtlyDataKeys.PLAYER_UUID.value: player.UUID})
             sleep(1)
@@ -86,9 +95,9 @@ class ServerSideGameRoom(AbstractGameRoom):
                       TurtlyDataKeys.GAME_ROOM_PLAYERS_REPRESENTATION.value: player_representations,
                       TurtlyDataKeys.GAME_ROOM_ADMIN_NAME.value: self._adminPlayer.Name,
                       TurtlyDataKeys.GAME_ROOM_ADMIN_UUID.value: self._adminPlayer.UUID,
-                      TurtlyDataKeys.GAME_ROOM_LOCKED.value: self._locked,
-                      TurtlyDataKeys.GAME_ROOM_CLOSED.value: self._closed,
-                      TurtlyDataKeys.GAME_ROOM_STARTED.value: self._started}
+                      TurtlyDataKeys.GAME_ROOM_LOCKED.value: self._toggles["locked"],
+                      TurtlyDataKeys.GAME_ROOM_CLOSED.value: self._toggles["closed"],
+                      TurtlyDataKeys.GAME_ROOM_STARTED.value: self._toggles["started"],}
 
         self._send_to_all_players(TurtlyGameRoomCommands.SYNC,
                                   TurtlyCommandsType.RESPONSE,
