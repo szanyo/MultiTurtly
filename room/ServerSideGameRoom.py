@@ -19,6 +19,7 @@ class ServerSideGameRoom(AbstractGameRoom):
         print("-> Serverside game loop")
         self._startTime = time() + 3
 
+
         print(f"-> Server time: {self._startTime}")
         print(f"-> Starting in 3 seconds")
         while self._startTime < time():
