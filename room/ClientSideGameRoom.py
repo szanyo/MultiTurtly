@@ -2,9 +2,9 @@ import time
 from enum import Enum, auto
 from threading import Thread
 
-import pyconio
+from bpe.equipments.patterns.Observing import ObserverCollection
+
 from definitions.TurtlyDataKeys import TurtlyDataKeys
-from equipments.patterns.Observing import  ObserverCollection
 from graphics.Graphics import GraphicsCommands, Graphics
 from player.ClientSidePlayer import ClientSidePlayer
 from room.AbstractGameRoom import AbstractGameRoom

@@ -5,13 +5,13 @@ import sys
 import time
 from threading import Thread
 
-import pyconio
+from bpe.equipments.networking import Networking
+from bpe.equipments.networking.Networking import CLIENT_CONFIG_FILE_LOCATION, JSONNetworkConfig, NetworkingEvents
+from bpe.equipments.networking.TCP.ClientTCP import Client
+from bpe.equipments.security.Cryptography import Cryptography, generate_custom_key
+
 from definitions.TurtlyCommands import TurtlyServerCommands, TurtlyClientCommands, TurtlyGameRoomCommands
 from definitions.TurtlyDataKeys import TurtlyDataKeys
-from equipments.networking import Networking
-from equipments.networking.Networking import CLIENT_CONFIG_FILE_LOCATION, JSONNetworkConfig, NetworkingEvents
-from equipments.networking.TCP.ClientTCP import Client
-from equipments.security.Cryptography import Cryptography, generate_custom_key
 from graphics.Graphics import Graphics, GraphicsCommands
 from player.ClientSidePlayer import ClientSidePlayer
 from room.ClientSideGameRoom import ClientSideGameRoom

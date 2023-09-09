@@ -3,7 +3,7 @@ import time
 from threading import Thread
 from turtle import mainloop
 
-import pyconio
+from bpe.pyconio import clrscr
 from graphics.Graphics import Graphics
 from room.AbstractGameRoom import roomNameValidator
 from room.ClientSideGameRoom import ClientSideGameRoomEvents
@@ -41,7 +41,7 @@ class Console:
     def _create_new_game_room(self):
         created = False
         while not created:
-            pyconio.clrscr()
+            clrscr()
             print("---Create new game room---")
             created_room_name = ""
             while created_room_name == "":
@@ -71,7 +71,7 @@ class Console:
     def _join_to_game_room(self):
         joined = False
         while not joined:
-            pyconio.clrscr()
+            clrscr()
             print("---Join to game room---")
             selected_room_name = ""
             while selected_room_name == "":
@@ -140,13 +140,13 @@ class Console:
         # TODO: back to game room menu
 
     def _on_update_room(self):
-        pyconio.clrscr()
+        clrscr()
         print("---Ready to start game---")
         self._tc.Room.print_status()
         print("Press any key if you are ready to start the game")
 
     def _on_update_room_ready(self):
-        pyconio.clrscr()
+        clrscr()
         print("---Game loop info---")
         print("Wait in lobby for other players to join...")
         print()

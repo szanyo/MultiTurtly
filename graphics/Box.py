@@ -1,4 +1,4 @@
-from turtle import speed, hideturtle, color, up, goto, down, fd, circle, update, tracer, isvisible, showturtle, Turtle
+from turtle import tracer, Turtle
 
 
 class Box:

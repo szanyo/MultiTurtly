@@ -1,11 +1,11 @@
 import threading
 from time import sleep, time
 
+from bpe.equipments.multitools.Bicska import generate_distinct_colors
 from definitions import TurtlyPredefinedDirections
-from definitions.TurtlyCommands import TurtlyClientCommands, TurtlyCommandsType, TurtlyGameRoomCommands
+from definitions.TurtlyCommands import TurtlyCommandsType, TurtlyGameRoomCommands
 from definitions.TurtlyDataKeys import TurtlyDataKeys
 from definitions.TurtlyPredefinedPositions import TurtlyPredefinedPositions
-from equipments.multitools.Bicska import generate_distinct_colors
 from room.AbstractGameRoom import AbstractGameRoom
 from turtly.Hermes import Hermes
 

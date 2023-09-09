@@ -1,6 +1,8 @@
-from turtle import tracer, Turtle, Screen
 from tkinter.font import Font
+from turtle import tracer, Turtle, Screen
+
 from graphics.Box import Box
+
 
 class TextBox(Box):
     def __init__(self, *args, **kwargs):

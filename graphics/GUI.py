@@ -1,6 +1,3 @@
-from random import choice
-from turtle import speed, isvisible, color, isdown, hideturtle, up, goto, down, fd, circle, showturtle
-
 from graphics.Box import Box
 from graphics.TextBox import TextBox
 

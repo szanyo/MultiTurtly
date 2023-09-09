@@ -1,7 +1,8 @@
 from typing import Callable
 
-import pyconio
-from equipments.patterns.Observing import ObserverCollection, Observer
+
+from bpe.equipments.patterns.Observing import ObserverCollection
+from bpe.pyconio import clrscr
 
 
 class ConsoleContext:
@@ -24,7 +25,7 @@ class ConsoleContext:
         self._observing.get(0).subscribe(lambda: setattr(self, "back", True))
 
     def __enter__(self):
-        pyconio.clrscr()
+        clrscr()
         if self._enterOutlook is not None:
             self._enterOutlook()
         return self

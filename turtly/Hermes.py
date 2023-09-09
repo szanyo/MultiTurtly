@@ -1,7 +1,7 @@
 from typing import Callable
 
+from bpe.equipments.security.Unique import Unique
 from definitions.TurtlyCommands import TurtlyCommandsType, TurtlyCommands
-from equipments.security.Unique import Unique
 
 
 class Hermes(Unique):

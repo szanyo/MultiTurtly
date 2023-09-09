@@ -3,7 +3,7 @@ from enum import auto
 from time import sleep
 from turtle import Screen, done
 
-from equipments.patterns.Observing import ObserverCollection
+from bpe.equipments.patterns.Observing import ObserverCollection
 from graphics.GUI import GUI
 
 

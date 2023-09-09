@@ -5,7 +5,7 @@ from definitions.TurtlyDataKeys import TurtlyDataKeys
 from netturtle.ServerSideNetTurtle import ServerSideNetTurtle
 from player.AbstractPlayer import AbstractPlayer
 from room.ServerSideGameRoom import ServerSideGameRoom
-from turtly.Hermes import Hermes, HermesInterpreter
+from turtly.Hermes import Hermes
 
 
 class ServerSidePlayer(AbstractPlayer, ServerSideNetTurtle, Thread):

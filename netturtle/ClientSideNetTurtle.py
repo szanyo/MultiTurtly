@@ -4,10 +4,9 @@ from queue import Queue
 from random import randint
 from turtle import Turtle, tracer
 
-from definitions.TurtlyDataKeys import TurtlyDataKeys
-from equipments.patterns.History import History
+from bpe.equipments.patterns.History import History
 from graphics.Box import Box
-from graphics.Graphics import Graphics, GraphicsCommands
+from graphics.Graphics import Graphics
 from netturtle.AbstractNetTurtle import AbstractNetTurtle
 
 DEFAULT_COLOR_TUPLE = (125, 125, 125)

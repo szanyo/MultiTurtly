@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
 
+from bpe.equipments.security.Unique import Unique
 from definitions.TurtlyCommands import TurtlyGameRoomCommands
-from player.AbstractPlayer import AbstractPlayer
 from definitions.TurtlyDataKeys import TurtlyDataKeys
-from equipments.security.Unique import Unique
+from player.AbstractPlayer import AbstractPlayer
 from turtly.Hermes import HermesInterpreter
 
 

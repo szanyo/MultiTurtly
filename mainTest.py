@@ -1,7 +1,7 @@
 import threading
 from threading import Thread
 from time import sleep
-from turtle import Screen, mainloop, Turtle
+from turtle import mainloop
 
 from graphics.Graphics import Graphics, GraphicsCommands
 from netturtle.ClientSideNetTurtle import ClientSideNetTurtle

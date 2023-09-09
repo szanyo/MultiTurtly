@@ -1,7 +1,7 @@
 from abc import ABC
 
+from bpe.equipments.security.Unique import Unique
 from definitions.TurtlyDataKeys import TurtlyDataKeys
-from equipments.security.Unique import Unique
 
 
 class AbstractPlayer(Unique, ABC):

@@ -4,15 +4,14 @@ import sys
 import time
 from threading import Thread
 
-from turtly.Hermes import Hermes, HermesInterpreter
-from player.AbstractPlayer import AbstractPlayer
-from player.ServerSidePlayer import ServerSidePlayer
-from room.ServerSideGameRoom import ServerSideGameRoom
+from bpe.equipments.networking.Networking import SERVER_CONFIG_FILE_LOCATION, JSONNetworkConfig
+from bpe.equipments.networking.TCP.MultiClientServerTCP import MultiClientServer
+from bpe.equipments.security.Cryptography import Cryptography, generate_custom_key
 from definitions.TurtlyCommands import TurtlyServerCommands, TurtlyClientCommands, TurtlyCommandsType
 from definitions.TurtlyDataKeys import TurtlyDataKeys
-from equipments.networking.Networking import SERVER_CONFIG_FILE_LOCATION, JSONNetworkConfig
-from equipments.networking.TCP.MultiClientServerTCP import MultiClientServer
-from equipments.security.Cryptography import Cryptography, generate_custom_key
+from player.ServerSidePlayer import ServerSidePlayer
+from room.ServerSideGameRoom import ServerSideGameRoom
+from turtly.Hermes import Hermes, HermesInterpreter
 
 
 def path():
